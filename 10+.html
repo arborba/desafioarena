@@ -1,0 +1,2919 @@
+<!doctype html>
+<html lang="pt-BR">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Desafio Arena · Plataforma Completa</title>
+  <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Roboto, sans-serif;
+        }
+        body {
+            background: linear-gradient(145deg, #0b1a2e 0%, #1b2f44 100%);
+            min-height: 100vh;
+            padding: 20px 15px;
+            color: #e0f0ff;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .top-bar {
+            background: rgba(10, 25, 40, 0.8);
+            backdrop-filter: blur(6px);
+            border-radius: 60px;
+            padding: 12px 20px;
+            margin-bottom: 25px;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            border: 1px solid #3f5e7a;
+        }
+        .saldo {
+            background: #0d2f44;
+            padding: 8px 18px;
+            border-radius: 40px;
+            font-weight: bold;
+            font-size: 1.4rem;
+            border: 1px solid #2499e0;
+        }
+        .saldo span {
+            color: #ffd966;
+            font-size: 1.8rem;
+            margin-left: 8px;
+        }
+        .acoes button {
+            background: #1e4f6b;
+            border: none;
+            color: white;
+            padding: 10px 18px;
+            margin: 5px;
+            border-radius: 40px;
+            font-weight: bold;
+            border-bottom: 3px solid #0d3142;
+            cursor: pointer;
+        }
+        .banner-pisca {
+            background: linear-gradient(145deg, #f9c74f, #f9844a);
+            border-radius: 30px;
+            padding: 20px;
+            margin: 20px 0 30px;
+            text-align: center;
+            font-weight: 900;
+            font-size: 1.8rem;
+            color: #1a2e3f;
+            animation: piscar 0.9s infinite alternate;
+        }
+        @keyframes piscar {
+            from { opacity: 0.9; box-shadow: 0 0 15px gold; }
+            to { opacity: 1; box-shadow: 0 0 40px #ffae42; }
+        }
+        .jogos-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 15px;
+            margin: 30px 0;
+        }
+        .card-jogo {
+            background: #1f3a4b;
+            border-radius: 28px;
+            padding: 18px 8px 12px;
+            text-align: center;
+            border: 2px solid #3e6a8c;
+        }
+        .card-jogo strong {
+            font-size: 1.4rem;
+            display: block;
+            margin-bottom: 10px;
+            color: #fbffb9;
+        }
+        .modos {
+            display: flex;
+            gap: 8px;
+            justify-content: center;
+            margin-top: 10px;
+        }
+        .btn-individual, .btn-desafio {
+            border: none;
+            color: white;
+            padding: 8px 12px;
+            border-radius: 40px;
+            font-weight: 600;
+            border-bottom: 3px solid;
+            cursor: pointer;
+            flex: 1;
+        }
+        .btn-individual { background: #2b6c8f; border-bottom-color: #154256; }
+        .btn-desafio { background: #d48b1c; border-bottom-color: #8f5711; }
+        .painel-duplo {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin: 40px 0 20px;
+        }
+        .ranking, .perfil-mini {
+            background: #0f2838;
+            border-radius: 40px;
+            padding: 20px;
+            flex: 1 1 200px;
+        }
+        .ranking h3, .perfil-mini h3 {
+            border-bottom: 2px solid #ffae42;
+            padding-bottom: 8px;
+            margin-bottom: 15px;
+        }
+        .ranking ol {
+            padding-left: 25px;
+        }
+        .perfil-mini p {
+            margin: 10px 0;
+        }
+        .cadastro-box {
+            background: #173e54;
+            border-radius: 50px;
+            padding: 25px;
+            margin-bottom: 20px;
+        }
+        .cadastro-box h2 {
+            margin-bottom: 20px;
+            color: #ffd966;
+        }
+        .input-group {
+            margin-bottom: 15px;
+        }
+        .input-group label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+        .input-group input {
+            width: 100%;
+            padding: 14px 20px;
+            border-radius: 50px;
+            border: none;
+            background: #eef5ff;
+        }
+        .btn-cadastro {
+            background: #45b787;
+            color: white;
+            border: none;
+            padding: 16px 30px;
+            border-radius: 50px;
+            font-size: 1.3rem;
+            border-bottom: 4px solid #1a6b4a;
+            cursor: pointer;
+            width: 100%;
+        }
+        .btn-visitante {
+            background: #b38b5d;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 50px;
+            font-size: 1rem;
+            border-bottom: 3px solid #6b4f2e;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 10px;
+        }
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            color: #89b6d4;
+        }
+        .modal-jogo {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.9);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+        .modal-conteudo {
+            background: #1f3a4b;
+            padding: 20px;
+            border-radius: 40px;
+            max-width: 500px;
+            width: 95%;
+            text-align: center;
+            border: 3px solid #ffae42;
+        }
+        .fechar-modal {
+            background: #b33;
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 40px;
+            font-weight: bold;
+            margin-top: 20px;
+            cursor: pointer;
+            font-size: 1.2rem;
+        }
+    </style>
+ </head>
+ <body>
+  <div class="container">
+   <div class="top-bar">
+    <div class="saldo">
+     💰 Saldo: <span id="saldoValor">0,00</span>
+    </div>
+    <div class="acoes">
+     <button id="btnDepositar">➕ Pix</button>
+     <button id="btnSacar">💸 Sacar</button>
+    </div>
+   </div>
+   <div class="banner-pisca">⚡⚡ 50% DE CHANCE · 50% DE LUCRO · DOBRE JÁ ⚡⚡</div>
+   <div id="cadastroContainer" class="cadastro-box">
+    <h2>📝 Crie seu registro</h2>
+    <div class="input-group">
+     <label>Nome completo</label> <input type="text" id="nomeCompleto" placeholder="Ex: Maria Aparecida">
+    </div>
+    <div class="input-group">
+     <label>CPF (somente números)</label> <input type="text" id="cpf" placeholder="12345678900" maxlength="11">
+    </div>
+    <div class="input-group">
+     <label>Senha</label> <input type="password" id="senha" placeholder="mínimo 6 caracteres">
+    </div>
+    <div class="input-group">
+     <label>Nome de jogador</label> <input type="text" id="nomeJogador" placeholder="ex: maryjoga">
+    </div>
+    <button class="btn-cadastro" id="btnRegistrar">✅ CADASTRAR E ENTRAR</button>
+    <button class="btn-visitante" id="btnVisitante">👤 ENTRAR COMO VISITANTE</button>
+   </div>
+   <div id="painelJogador" style="display: none;">
+    <div style="background:#0b3245; border-radius:40px; padding:15px 25px; margin-bottom:20px;">
+     <h2>👤 Bem-vindo, <span id="displayNomeJogador">Jogador</span>!</h2>
+     <p>ID: <span id="displayNomeUsuario">@usuario</span></p>
+    </div>
+    <h2>🎮 Escolha seu jogo</h2>
+    <div class="jogos-grid" id="gridJogos"></div>
+    <div class="painel-duplo">
+     <div class="ranking">
+      <h3>🏆 Ranking geral</h3>
+      <ol id="listaRanking">
+       <li>cobrinha_king – R$ 1.230</li>
+       <li>ana_sudoku – R$ 987</li>
+       <li>beto_99 – R$ 812</li>
+       <li>_bot_47 – R$ 490</li>
+       <li>_bot_12 – R$ 470</li>
+       <li>_bot_89 – R$ 450</li>
+       <li>_bot_33 – R$ 430</li>
+       <li>_bot_58 – R$ 410</li>
+       <li>_bot_21 – R$ 390</li>
+       <li>_bot_05 – R$ 370</li>
+      </ol>
+     </div>
+     <div class="perfil-mini">
+      <h3>📊 Seu desempenho</h3>
+      <p>🔹 Vitórias: <span id="vitorias">0</span></p>
+      <p>🔹 Desafios: <span id="desafios">0</span></p>
+      <p>🔹 Saldo: R$ <span id="saldoPerfil">0,00</span></p>
+      <button id="btnSair" style="background:#963b3b; color:white; padding:10px; border-radius:40px; width:100%;">Sair da conta</button>
+     </div>
+    </div>
+   </div>
+   <footer>
+    <p>🔁 desafio arena · taxa de R$1 · saques a partir de R$50 via Pix</p>
+    <p>⚙️ 100 bots ativos · matchmaking em 10s</p>
+   </footer>
+  </div>
+  <script>
+        (function() {
+            let saldoAtual = 5.00;
+            let jogadorLogado = false;
+            let jogador = {
+                nomeCompleto: '',
+                cpf: '',
+                nomeJogador: '',
+                vitorias: 0,
+                desafios: 0
+            };
+
+            const jogos = [
+                { nome: 'Sudoku', icone: '🧩' },
+                { nome: 'Tetris', icone: '🔷' },
+                { nome: 'Cobrinha', icone: '🐍' },
+                { nome: '100 Slots', icone: '🎰' },
+                { nome: 'Candy Crush Lite', icone: '🍬' },
+                { nome: 'Flappy Bird', icone: '🐦' },
+                { nome: '2048', icone: '🔢' },
+                { nome: 'Pong', icone: '🏓' },
+                { nome: 'Corrida de Reação', icone: '⚡' },
+                { nome: 'Memória', icone: '🎴' }
+            ];
+
+            const cadastroDiv = document.getElementById('cadastroContainer');
+            const painelDiv = document.getElementById('painelJogador');
+            const saldoSpan = document.getElementById('saldoValor');
+            const saldoPerfil = document.getElementById('saldoPerfil');
+            const displayNomeJogador = document.getElementById('displayNomeJogador');
+            const displayNomeUsuario = document.getElementById('displayNomeUsuario');
+            const vitoriasSpan = document.getElementById('vitorias');
+            const desafiosSpan = document.getElementById('desafios');
+            const gridJogos = document.getElementById('gridJogos');
+            const btnRegistrar = document.getElementById('btnRegistrar');
+            const btnVisitante = document.getElementById('btnVisitante');
+            const btnSair = document.getElementById('btnSair');
+            const btnDepositar = document.getElementById('btnDepositar');
+            const btnSacar = document.getElementById('btnSacar');
+
+            function atualizarSaldoUI() {
+                saldoSpan.innerText = saldoAtual.toFixed(2);
+                if (saldoPerfil) saldoPerfil.innerText = saldoAtual.toFixed(2);
+            }
+
+            function atualizarPerfilUI() {
+                if (jogadorLogado) {
+                    displayNomeJogador.innerText = jogador.nomeCompleto.split(' ')[0];
+                    displayNomeUsuario.innerText = '@' + (jogador.nomeJogador || 'visitante');
+                    vitoriasSpan.innerText = jogador.vitorias;
+                    desafiosSpan.innerText = jogador.desafios;
+                }
+            }
+
+            function mostrarPainelLogado() {
+                cadastroDiv.style.display = 'none';
+                painelDiv.style.display = 'block';
+                atualizarSaldoUI();
+                atualizarPerfilUI();
+            }
+
+            function mostrarCadastro() {
+                cadastroDiv.style.display = 'block';
+                painelDiv.style.display = 'none';
+            }
+
+            function construirJogos() {
+                gridJogos.innerHTML = '';
+                jogos.forEach(j => {
+                    const card = document.createElement('div');
+                    card.className = 'card-jogo';
+                    card.innerHTML = `
+                        <strong>${j.icone} ${j.nome}</strong>
+                        <div class="modos">
+                            <button class="btn-individual" data-jogo="${j.nome}">🧘 Individual</button>
+                            <button class="btn-desafio" data-jogo="${j.nome}">⚔️ Desafio R$2</button>
+                        </div>
+                    `;
+                    gridJogos.appendChild(card);
+                });
+            }
+
+            window.abrirJogo = function(nome, modo) {
+                alert(`Abrindo ${nome} no modo ${modo}\n\nAqui você deve chamar a função real do jogo.`);
+            };
+
+            function adicionarEventosBotoes() {
+                document.querySelectorAll('.btn-individual').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        const jogoNome = e.target.dataset.jogo;
+                        if (!jogadorLogado) {
+                            alert('Cadastre-se ou entre como visitante.');
+                            return;
+                        }
+                        window.abrirJogo(jogoNome, 'individual');
+                    });
+                });
+
+                document.querySelectorAll('.btn-desafio').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        const jogoNome = e.target.dataset.jogo;
+                        if (!jogadorLogado) {
+                            alert('Cadastre-se ou entre como visitante.');
+                            return;
+                        }
+                        if (saldoAtual < 2.0) {
+                            alert('Saldo insuficiente! Faça um depósito.');
+                            return;
+                        }
+                        saldoAtual -= 2.0;
+                        atualizarSaldoUI();
+                        alert(`🔍 Procurando oponente para ${jogoNome}...`);
+                        setTimeout(() => {
+                            window.abrirJogo(jogoNome, 'desafio');
+                        }, 1500);
+                    });
+                });
+            }
+
+            btnRegistrar.addEventListener('click', () => {
+                const nome = document.getElementById('nomeCompleto').value.trim();
+                const cpf = document.getElementById('cpf').value.trim();
+                const senha = document.getElementById('senha').value.trim();
+                const nomeJog = document.getElementById('nomeJogador').value.trim();
+
+                if (!nome || !cpf || !senha || !nomeJog) {
+                    alert('Preencha todos os campos.');
+                    return;
+                }
+                if (cpf.length !== 11 || isNaN(cpf)) {
+                    alert('CPF deve ter 11 números.');
+                    return;
+                }
+                if (senha.length < 6) {
+                    alert('Senha deve ter pelo menos 6 caracteres.');
+                    return;
+                }
+
+                jogador = {
+                    nomeCompleto: nome,
+                    cpf: cpf,
+                    nomeJogador: nomeJog,
+                    vitorias: 0,
+                    desafios: 0
+                };
+                jogadorLogado = true;
+                saldoAtual = 5.00;
+                mostrarPainelLogado();
+                atualizarPerfilUI();
+                alert('Cadastro realizado! Você ganhou R$5,00 de bônus.');
+            });
+
+            btnVisitante.addEventListener('click', () => {
+                jogador = {
+                    nomeCompleto: 'Visitante',
+                    cpf: '00000000000',
+                    nomeJogador: 'visitante_' + Math.floor(Math.random() * 1000),
+                    vitorias: 0,
+                    desafios: 0
+                };
+                jogadorLogado = true;
+                saldoAtual = 5.00;
+                mostrarPainelLogado();
+                atualizarPerfilUI();
+                alert('Bem-vindo, visitante! Você tem R$5,00 de bônus.');
+            });
+
+            btnSair.addEventListener('click', () => {
+                jogadorLogado = false;
+                saldoAtual = 0.0;
+                mostrarCadastro();
+                document.getElementById('nomeCompleto').value = '';
+                document.getElementById('cpf').value = '';
+                document.getElementById('senha').value = '';
+                document.getElementById('nomeJogador').value = '';
+            });
+
+            btnDepositar.addEventListener('click', () => {
+                if (!jogadorLogado) { alert('Entre primeiro.'); return; }
+                let valor = prompt('Valor (mínimo R$5):', '10');
+                if (valor) {
+                    valor = parseFloat(valor.replace(',', '.'));
+                    if (!isNaN(valor) && valor >= 5) {
+                        saldoAtual += valor;
+                        atualizarSaldoUI();
+                        alert(`Depósito de R$${valor.toFixed(2)} simulado.`);
+                    } else alert('Valor inválido.');
+                }
+            });
+
+            btnSacar.addEventListener('click', () => {
+                if (!jogadorLogado) { alert('Entre primeiro.'); return; }
+                if (saldoAtual < 50) {
+                    alert(`Mínimo R$50. Saldo: R$${saldoAtual.toFixed(2)}`);
+                    return;
+                }
+                alert('Saque simulado via Pix solicitado!');
+            });
+
+            construirJogos();
+            adicionarEventosBotoes();
+            mostrarCadastro();
+            atualizarSaldoUI();
+
+            window.saldoAtual = saldoAtual;
+            window.jogador = jogador;
+            window.atualizarSaldoUI = atualizarSaldoUI;
+            window.atualizarPerfilUI = atualizarPerfilUI;
+        })();
+    </script>
+  <!-- ========================================== -->
+  <!--          JOGO DA COBRINHA (SNAKE)         -->
+  <!-- ========================================== -->
+  <!-- Modal da Cobrinha -->
+  <div id="modalSnake" class="modal-jogo" style="display: none;">
+   <div class="modal-conteudo">
+    <h2 style="color:#fbffb9;">🐍 COBRINHA</h2>
+    <div class="canvas-container">
+     <canvas id="snakeCanvas" width="400" height="400"></canvas>
+    </div>
+    <div style="display: flex; justify-content: space-around; margin: 10px 0;">
+     <span>Pontos: <strong id="snakePontuacao">0</strong></span> <span>Recorde: <strong id="snakeRecorde">0</strong></span>
+    </div>
+    <!-- Controles touch para celular (botões maiores) -->
+    <div class="controles-touch" style="margin-top:15px;">
+     <div class="linha-botoes" style="gap:20px;">
+      <button class="btn-seta" id="snakeCima" style="width:90px; height:90px; font-size:2.5rem;">▲</button>
+     </div>
+     <div class="linha-botoes" style="gap:20px; margin-top:10px;">
+      <button class="btn-seta" id="snakeEsquerda" style="width:90px; height:90px; font-size:2.5rem;">◀</button>
+      <button class="btn-seta" id="snakeBaixo" style="width:90px; height:90px; font-size:2.5rem;">▼</button>
+      <button class="btn-seta" id="snakeDireita" style="width:90px; height:90px; font-size:2.5rem;">▶</button>
+     </div>
+    </div>
+    <p class="instrucoes">Use as setas do teclado ou os botões na tela.</p>
+    <button class="fechar-modal" id="fecharSnake">Fechar jogo</button>
+   </div>
+  </div>
+  <script>
+    (function() {
+        const modalSnake = document.getElementById('modalSnake');
+        if (!modalSnake) return;
+
+        const canvas = document.getElementById('snakeCanvas');
+        const pontuacaoSpan = document.getElementById('snakePontuacao');
+        const recordeSpan = document.getElementById('snakeRecorde');
+        const fecharBtn = document.getElementById('fecharSnake');
+        const btnCima = document.getElementById('snakeCima');
+        const btnBaixo = document.getElementById('snakeBaixo');
+        const btnEsq = document.getElementById('snakeEsquerda');
+        const btnDir = document.getElementById('snakeDireita');
+
+        let snakeInterval = null;
+        let recorde = 0;
+        let modoAtual = 'individual'; // 'individual' ou 'desafio'
+
+        function iniciarSnake(modo) {
+            modoAtual = modo;
+            modalSnake.style.display = 'flex';
+
+            const ctx = canvas.getContext('2d');
+            const tamanhoCelula = 20;
+            let cobra = [{x:10, y:10}];
+            let direcao = {x:1, y:0}; // começa andando para direita
+            let comida = {x:15, y:15};
+            let pontuacao = 0;
+            let gameOver = false;
+
+            function gerarComida() {
+                const livre = [];
+                for (let i=0; i<20; i++) {
+                    for (let j=0; j<20; j++) {
+                        if (!cobra.some(seg => seg.x === i && seg.y === j)) {
+                            livre.push({x:i, y:j});
+                        }
+                    }
+                }
+                if (livre.length === 0) {
+                    gameOver = true;
+                    return null;
+                }
+                return livre[Math.floor(Math.random() * livre.length)];
+            }
+
+            function desenhar() {
+                ctx.clearRect(0, 0, 400, 400);
+                // Grade
+                ctx.strokeStyle = '#2a4a5a';
+                ctx.lineWidth = 0.5;
+                for (let i=0; i<=20; i++) {
+                    ctx.beginPath();
+                    ctx.moveTo(i*20, 0);
+                    ctx.lineTo(i*20, 400);
+                    ctx.stroke();
+                    ctx.moveTo(0, i*20);
+                    ctx.lineTo(400, i*20);
+                    ctx.stroke();
+                }
+
+                // Cobra
+                ctx.fillStyle = '#6fda6f';
+                cobra.forEach(seg => {
+                    ctx.fillRect(seg.x*20+1, seg.y*20+1, 18, 18);
+                });
+
+                // Comida
+                if (comida) {
+                    ctx.fillStyle = '#ff4d4d';
+                    ctx.beginPath();
+                    ctx.arc(comida.x*20+10, comida.y*20+10, 8, 0, 2*Math.PI);
+                    ctx.fill();
+                }
+
+                pontuacaoSpan.innerText = pontuacao;
+            }
+
+            function atualizar() {
+                if (gameOver) return;
+
+                const cabeca = cobra[0];
+                const novaCabeca = {
+                    x: cabeca.x + direcao.x,
+                    y: cabeca.y + direcao.y
+                };
+
+                // Colisão com paredes
+                if (novaCabeca.x < 0 || novaCabeca.x >= 20 || novaCabeca.y < 0 || novaCabeca.y >= 20) {
+                    gameOver = true;
+                    finalizarJogo();
+                    return;
+                }
+
+                // Colisão com o corpo
+                if (cobra.some(seg => seg.x === novaCabeca.x && seg.y === novaCabeca.y)) {
+                    gameOver = true;
+                    finalizarJogo();
+                    return;
+                }
+
+                cobra.unshift(novaCabeca);
+
+                // Comeu comida?
+                if (comida && novaCabeca.x === comida.x && novaCabeca.y === comida.y) {
+                    pontuacao++;
+                    if (pontuacao > recorde) {
+                        recorde = pontuacao;
+                        recordeSpan.innerText = recorde;
+                    }
+                    comida = gerarComida();
+                    if (!comida) {
+                        gameOver = true;
+                        finalizarJogo(true);
+                    }
+                } else {
+                    cobra.pop();
+                }
+
+                desenhar();
+            }
+
+            function finalizarJogo(vitoria = false) {
+                if (snakeInterval) clearInterval(snakeInterval);
+                snakeInterval = null;
+
+                if (vitoria) {
+                    alert('Parabéns! Você preencheu todo o tabuleiro!');
+                } else {
+                    alert(`Fim de jogo! Sua pontuação: ${pontuacao}`);
+                }
+
+                if (modoAtual === 'desafio') {
+                    if (typeof saldoAtual !== 'undefined' && typeof jogador !== 'undefined') {
+                        const pontosBot = Math.floor(Math.random() * (pontuacao + 10));
+                        if (pontuacao > pontosBot) {
+                            saldoAtual += 3.0;
+                            jogador.vitorias++;
+                            alert(`🏆 Desafio vencido! Você fez ${pontuacao} pontos, o bot fez ${pontosBot}. Ganhou R$3,00!`);
+                        } else if (pontuacao === pontosBot) {
+                            saldoAtual += 1.5;
+                            alert(`🤝 Empate! Você e o bot fizeram ${pontuacao} pontos. R$1,50 devolvidos.`);
+                        } else {
+                            alert(`😞 Você perdeu! Você fez ${pontuacao}, o bot fez ${pontosBot}.`);
+                        }
+                        jogador.desafios++;
+                        if (typeof atualizarSaldoUI === 'function') atualizarSaldoUI();
+                        if (typeof atualizarPerfilUI === 'function') atualizarPerfilUI();
+                    }
+                }
+            }
+
+            // Controles por teclado
+            function tecladoHandler(e) {
+                const key = e.key;
+                if (key === 'ArrowUp' && direcao.y === 0) { direcao = {x:0, y:-1}; }
+                else if (key === 'ArrowDown' && direcao.y === 0) { direcao = {x:0, y:1}; }
+                else if (key === 'ArrowLeft' && direcao.x === 0) { direcao = {x:-1, y:0}; }
+                else if (key === 'ArrowRight' && direcao.x === 0) { direcao = {x:1, y:0}; }
+            }
+
+            // Controles touch
+            btnCima.onclick = () => { if (direcao.y === 0) direcao = {x:0, y:-1}; };
+            btnBaixo.onclick = () => { if (direcao.y === 0) direcao = {x:0, y:1}; };
+            btnEsq.onclick = () => { if (direcao.x === 0) direcao = {x:-1, y:0}; };
+            btnDir.onclick = () => { if (direcao.x === 0) direcao = {x:1, y:0}; };
+
+            window.addEventListener('keydown', tecladoHandler);
+
+            if (snakeInterval) clearInterval(snakeInterval);
+            snakeInterval = setInterval(atualizar, 150);
+            desenhar();
+
+            fecharBtn.onclick = () => {
+                modalSnake.style.display = 'none';
+                if (snakeInterval) clearInterval(snakeInterval);
+                snakeInterval = null;
+                window.removeEventListener('keydown', tecladoHandler);
+            };
+        }
+
+        // Expõe a função globalmente
+        window.abrirSnake = iniciarSnake;
+    })();
+</script>
+  <!-- ========== FIM DO BLOCO DA COBRINHA ========== -->
+  <!-- ========================================== -->
+  <!--              JOGO DO SUDOKU                -->
+  <!-- ========================================== -->
+  <!-- Modal do Sudoku -->
+  <div id="modalSudoku" class="modal-jogo" style="display: none;">
+   <div class="modal-conteudo" style="max-width: 550px; background: linear-gradient(145deg, #2a4a5a, #1f3a4b); border: 3px solid #ffae42;">
+    <h2 style="color:#fbffb9; text-shadow: 2px 2px 0 #aa7700;">🧩 SUDOKU</h2>
+    <div class="sudoku-grid" id="sudokuGrid" style="margin:15px 0;"></div>
+    <div style="display: flex; gap: 15px; justify-content: center; margin: 15px 0;">
+     <button id="sudokuVerificar" style="background: #45b787; border: none; color: white; padding: 15px 30px; border-radius: 60px; font-weight: bold; font-size: 1.3rem; border-bottom: 5px solid #1a6b4a; cursor: pointer; flex:1;">✅ Verificar</button>
+     <button id="sudokuNovo" style="background: #d48b1c; border: none; color: white; padding: 15px 30px; border-radius: 60px; font-weight: bold; font-size: 1.3rem; border-bottom: 5px solid #8f5711; cursor: pointer; flex:1;">🔄 Novo jogo</button>
+    </div>
+    <p class="instrucoes">Preencha com números de 1 a 9 sem repetir em linhas, colunas ou blocos.</p>
+    <button class="fechar-modal" id="fecharSudoku" style="background:#b33; color:white; border:none; padding:15px 30px; border-radius:60px; font-weight:bold; font-size:1.2rem; cursor:pointer; margin-top:10px;">Fechar jogo</button>
+   </div>
+  </div>
+  <style>
+    /* Estilos específicos para o grid do Sudoku */
+    .sudoku-grid {
+        display: grid;
+        grid-template-columns: repeat(9, 1fr);
+        gap: 3px;
+        background: #ffae42;
+        padding: 5px;
+        border-radius: 15px;
+    }
+    .sudoku-grid input {
+        width: 100%;
+        aspect-ratio: 1/1;
+        text-align: center;
+        font-size: 1.5rem;
+        font-weight: bold;
+        border: 1px solid #2a4a5a;
+        border-radius: 8px;
+        background: white;
+        color: #333;
+    }
+    .sudoku-grid input:read-only {
+        background: #e0e0e0;
+        color: #333;
+    }
+</style>
+  <script>
+    (function() {
+        const modalSudoku = document.getElementById('modalSudoku');
+        if (!modalSudoku) return;
+
+        const gridContainer = document.getElementById('sudokuGrid');
+        const btnVerificar = document.getElementById('sudokuVerificar');
+        const btnNovo = document.getElementById('sudokuNovo');
+        const btnFechar = document.getElementById('fecharSudoku');
+
+        let tabuleiro = [];
+        let tabuleiroOriginal = [];
+        let modoAtual = 'individual'; // 'individual' ou 'desafio'
+
+        // Gera um Sudoku fácil pré-definido
+        function gerarSudokuFacil() {
+            return [
+                [5,3,0,0,7,0,0,0,0],
+                [6,0,0,1,9,5,0,0,0],
+                [0,9,8,0,0,0,0,6,0],
+                [8,0,0,0,6,0,0,0,3],
+                [4,0,0,8,0,3,0,0,1],
+                [7,0,0,0,2,0,0,0,6],
+                [0,6,0,0,0,0,2,8,0],
+                [0,0,0,4,1,9,0,0,5],
+                [0,0,0,0,8,0,0,7,9]
+            ];
+        }
+
+        function desenharSudoku() {
+            gridContainer.innerHTML = '';
+            for (let i = 0; i < 9; i++) {
+                for (let j = 0; j < 9; j++) {
+                    const celula = document.createElement('input');
+                    celula.type = 'text';
+                    celula.maxLength = 1;
+                    celula.value = tabuleiro[i][j] !== 0 ? tabuleiro[i][j] : '';
+
+                    if (tabuleiroOriginal[i][j] !== 0) {
+                        celula.readOnly = true;
+                    } else {
+                        celula.addEventListener('input', function(e) {
+                            const val = e.target.value;
+                            if (val && !/[1-9]/.test(val)) {
+                                e.target.value = '';
+                            }
+                        });
+                        celula.addEventListener('change', function(e) {
+                            const val = e.target.value;
+                            tabuleiro[i][j] = val ? parseInt(val) : 0;
+                        });
+                    }
+                    gridContainer.appendChild(celula);
+                }
+            }
+        }
+
+        function verificarSudoku() {
+            // Verifica se todas as células estão preenchidas
+            for (let i = 0; i < 9; i++) {
+                for (let j = 0; j < 9; j++) {
+                    if (tabuleiro[i][j] === 0) {
+                        alert('Ainda faltam números!');
+                        return;
+                    }
+                }
+            }
+
+            let valido = true;
+
+            // Verificar linhas
+            for (let i = 0; i < 9; i++) {
+                const linha = new Set();
+                for (let j = 0; j < 9; j++) {
+                    if (linha.has(tabuleiro[i][j])) valido = false;
+                    linha.add(tabuleiro[i][j]);
+                }
+            }
+
+            // Verificar colunas
+            for (let j = 0; j < 9; j++) {
+                const coluna = new Set();
+                for (let i = 0; i < 9; i++) {
+                    if (coluna.has(tabuleiro[i][j])) valido = false;
+                    coluna.add(tabuleiro[i][j]);
+                }
+            }
+
+            // Verificar blocos 3x3
+            for (let bloco = 0; bloco < 9; bloco++) {
+                const blocoSet = new Set();
+                const linhaInicio = Math.floor(bloco / 3) * 3;
+                const colInicio = (bloco % 3) * 3;
+                for (let i = 0; i < 3; i++) {
+                    for (let j = 0; j < 3; j++) {
+                        const valor = tabuleiro[linhaInicio + i][colInicio + j];
+                        if (blocoSet.has(valor)) valido = false;
+                        blocoSet.add(valor);
+                    }
+                }
+            }
+
+            if (valido) {
+                alert('Parabéns! Sudoku completo e correto!');
+                if (modoAtual === 'desafio') {
+                    if (typeof saldoAtual !== 'undefined' && typeof jogador !== 'undefined') {
+                        const pontosBot = Math.floor(Math.random() * 10); // bot faz de 0 a 9
+                        if (10 > pontosBot) { // jogador sempre faz 10 (completou)
+                            saldoAtual += 3.0;
+                            jogador.vitorias++;
+                            alert('🏆 Você venceu o desafio! R$3,00 creditados.');
+                        } else {
+                            alert('😞 Você perdeu o desafio.');
+                        }
+                        jogador.desafios++;
+                        if (typeof atualizarSaldoUI === 'function') atualizarSaldoUI();
+                        if (typeof atualizarPerfilUI === 'function') atualizarPerfilUI();
+                    }
+                }
+            } else {
+                alert('Ops! Tem números repetidos. Verifique novamente.');
+            }
+        }
+
+        function novoJogo() {
+            tabuleiroOriginal = gerarSudokuFacil();
+            tabuleiro = JSON.parse(JSON.stringify(tabuleiroOriginal));
+            desenharSudoku();
+        }
+
+        function abrirSudoku(modo) {
+            modoAtual = modo;
+            novoJogo();
+            modalSudoku.style.display = 'flex';
+        }
+
+        btnVerificar.addEventListener('click', verificarSudoku);
+        btnNovo.addEventListener('click', novoJogo);
+        btnFechar.addEventListener('click', () => {
+            modalSudoku.style.display = 'none';
+        });
+
+        // Expõe a função globalmente
+        window.abrirSudoku = abrirSudoku;
+    })();
+</script>
+  <!-- ========== FIM DO BLOCO SUDOKU ========== -->
+  <!-- ========================================== -->
+  <!--                JOGO TETRIS                 -->
+  <!-- ========================================== -->
+  <!-- Modal do Tetris -->
+  <div id="modalTetris" class="modal-jogo" style="display: none;">
+   <div class="modal-conteudo" style="max-width: 550px; background: linear-gradient(145deg, #1f3a4b, #0f2838); border: 3px solid #ffae42;">
+    <h2 style="color:#fbffb9; text-shadow: 2px 2px 0 #aa7700;">🔷 TETRIS</h2>
+    <div class="canvas-container">
+     <canvas id="tetrisCanvas" width="300" height="600" style="width:100%; max-width:300px; height:auto; aspect-ratio:1/2; background:#0d1f2c; border-radius:20px; border:2px solid #ffae42;"></canvas>
+    </div>
+    <div style="display: flex; justify-content: space-around; margin: 10px 0;">
+     <span style="font-size:1.2rem;">Pontos: <strong id="tetrisPontuacao" style="color:gold; font-size:1.5rem;">0</strong></span> <span style="font-size:1.2rem;">Linhas: <strong id="tetrisLinhas" style="color:gold; font-size:1.5rem;">0</strong></span>
+    </div>
+    <!-- Controles touch para celular (botões maiores) -->
+    <div class="controles-touch" style="margin-top:15px;">
+     <div class="linha-botoes" style="gap:20px;">
+      <button class="btn-seta" id="tetrisEsquerda" style="width:90px; height:90px; font-size:2.5rem;">◀</button>
+      <button class="btn-seta" id="tetrisDireita" style="width:90px; height:90px; font-size:2.5rem;">▶</button>
+     </div>
+     <div class="linha-botoes" style="gap:20px; margin-top:10px;">
+      <button class="btn-seta" id="tetrisRotate" style="width:90px; height:90px; font-size:2.5rem;">🔄</button>
+      <button class="btn-seta" id="tetrisDescida" style="width:90px; height:90px; font-size:2.5rem;">⬇️</button>
+     </div>
+    </div>
+    <p class="instrucoes" style="margin:10px 0;">Setas: mover, seta cima: girar, espaço: queda rápida.
+     <br>
+     Botões na tela também funcionam.</p>
+    <button class="fechar-modal" id="fecharTetris" style="background:#b33; color:white; border:none; padding:15px 30px; border-radius:60px; font-weight:bold; font-size:1.2rem; cursor:pointer; margin-top:5px;">Fechar jogo</button>
+   </div>
+  </div>
+  <script>
+    (function() {
+        const modalTetris = document.getElementById('modalTetris');
+        if (!modalTetris) return;
+
+        const canvas = document.getElementById('tetrisCanvas');
+        const pontuacaoSpan = document.getElementById('tetrisPontuacao');
+        const linhasSpan = document.getElementById('tetrisLinhas');
+        const btnEsquerda = document.getElementById('tetrisEsquerda');
+        const btnDireita = document.getElementById('tetrisDireita');
+        const btnRotate = document.getElementById('tetrisRotate');
+        const btnDescida = document.getElementById('tetrisDescida');
+        const btnFechar = document.getElementById('fecharTetris');
+
+        let tetrisInterval = null;
+        let tabuleiro = [];
+        let peca = null;
+        let proximaPeca = null;
+        let pontuacao = 0;
+        let linhas = 0;
+        let gameOver = false;
+        let modoAtual = 'individual';
+
+        const COLS = 10;
+        const LINHAS = 20;
+        const TAM = 30; // tamanho do bloco em pixels
+
+        const PECAS = [
+            { forma: [[1,1,1,1]], cor: '#00f0f0' }, // I
+            { forma: [[1,1],[1,1]], cor: '#f0f000' }, // O
+            { forma: [[0,1,0],[1,1,1]], cor: '#a000f0' }, // T
+            { forma: [[0,1,1],[1,1,0]], cor: '#00f000' }, // S
+            { forma: [[1,1,0],[0,1,1]], cor: '#f00000' }, // Z
+            { forma: [[1,0,0],[1,1,1]], cor: '#f0a000' }, // L
+            { forma: [[0,0,1],[1,1,1]], cor: '#0000f0' }  // J
+        ];
+
+        function criarTabuleiro() {
+            return Array(LINHAS).fill().map(() => Array(COLS).fill(0));
+        }
+
+        function novaPeca() {
+            const idx = Math.floor(Math.random() * PECAS.length);
+            const peca = PECAS[idx];
+            return {
+                forma: peca.forma.map(linha => [...linha]),
+                cor: peca.cor,
+                x: Math.floor((COLS - peca.forma[0].length) / 2),
+                y: 0
+            };
+        }
+
+        function desenhar() {
+            const ctx = canvas.getContext('2d');
+            ctx.clearRect(0, 0, 300, 600);
+
+            // Desenha o tabuleiro fixo
+            for (let l = 0; l < LINHAS; l++) {
+                for (let c = 0; c < COLS; c++) {
+                    if (tabuleiro[l][c] !== 0) {
+                        ctx.fillStyle = tabuleiro[l][c];
+                        ctx.fillRect(c * TAM, l * TAM, TAM-1, TAM-1);
+                    } else {
+                        ctx.strokeStyle = '#2a4a5a';
+                        ctx.lineWidth = 0.5;
+                        ctx.strokeRect(c * TAM, l * TAM, TAM, TAM);
+                    }
+                }
+            }
+
+            // Desenha a peça atual
+            if (peca) {
+                ctx.fillStyle = peca.cor;
+                for (let l = 0; l < peca.forma.length; l++) {
+                    for (let c = 0; c < peca.forma[0].length; c++) {
+                        if (peca.forma[l][c] !== 0) {
+                            const x = (peca.x + c) * TAM;
+                            const y = (peca.y + l) * TAM;
+                            ctx.fillRect(x, y, TAM-1, TAM-1);
+                        }
+                    }
+                }
+            }
+
+            pontuacaoSpan.innerText = pontuacao;
+            linhasSpan.innerText = linhas;
+        }
+
+        function colisao(pecaTeste, novoX, novoY) {
+            for (let l = 0; l < pecaTeste.forma.length; l++) {
+                for (let c = 0; c < pecaTeste.forma[0].length; c++) {
+                    if (pecaTeste.forma[l][c] !== 0) {
+                        const x = novoX + c;
+                        const y = novoY + l;
+                        if (x < 0 || x >= COLS || y >= LINHAS || (y >= 0 && tabuleiro[y][x] !== 0)) {
+                            return true;
+                        }
+                    }
+                }
+            }
+            return false;
+        }
+
+        function fixarPeca() {
+            for (let l = 0; l < peca.forma.length; l++) {
+                for (let c = 0; c < peca.forma[0].length; c++) {
+                    if (peca.forma[l][c] !== 0) {
+                        const y = peca.y + l;
+                        const x = peca.x + c;
+                        if (y >= 0) tabuleiro[y][x] = peca.cor;
+                    }
+                }
+            }
+
+            let linhasRemovidas = 0;
+            for (let l = LINHAS-1; l >= 0; ) {
+                if (tabuleiro[l].every(celula => celula !== 0)) {
+                    tabuleiro.splice(l, 1);
+                    tabuleiro.unshift(Array(COLS).fill(0));
+                    linhasRemovidas++;
+                } else {
+                    l--;
+                }
+            }
+
+            if (linhasRemovidas > 0) {
+                linhas += linhasRemovidas;
+                pontuacao += [0, 100, 300, 500, 800][linhasRemovidas] || 1000;
+            }
+
+            peca = proximaPeca ? proximaPeca : novaPeca();
+            proximaPeca = novaPeca();
+
+            if (colisao(peca, peca.x, peca.y)) {
+                gameOver = true;
+                finalizarJogo();
+            }
+        }
+
+        function mover(dx, dy) {
+            if (!peca || gameOver) return false;
+            if (!colisao(peca, peca.x + dx, peca.y + dy)) {
+                peca.x += dx;
+                peca.y += dy;
+                desenhar();
+                return true;
+            } else if (dy === 1) {
+                fixarPeca();
+                desenhar();
+            }
+            return false;
+        }
+
+        function rotacionar() {
+            if (!peca || gameOver) return;
+            const formaRot = peca.forma[0].map((_, idx) => peca.forma.map(linha => linha[idx]).reverse());
+            const pecaTemp = { ...peca, forma: formaRot };
+            if (!colisao(pecaTemp, pecaTemp.x, pecaTemp.y)) {
+                peca.forma = formaRot;
+                desenhar();
+            }
+        }
+
+        function quedaRapida() {
+            if (!peca || gameOver) return;
+            while (!colisao(peca, peca.x, peca.y + 1)) {
+                peca.y++;
+            }
+            fixarPeca();
+            desenhar();
+        }
+
+        function finalizarJogo() {
+            if (tetrisInterval) clearInterval(tetrisInterval);
+            tetrisInterval = null;
+            alert(`Fim de jogo! Pontuação: ${pontuacao}, Linhas: ${linhas}`);
+
+            if (modoAtual === 'desafio') {
+                if (typeof saldoAtual !== 'undefined' && typeof jogador !== 'undefined') {
+                    const pontosBot = Math.floor(Math.random() * (pontuacao + 200));
+                    if (pontuacao > pontosBot) {
+                        saldoAtual += 3.0;
+                        jogador.vitorias++;
+                        alert(`🏆 Desafio vencido! Você fez ${pontuacao} pontos, bot fez ${pontosBot}. Ganhou R$3,00!`);
+                    } else if (pontuacao === pontosBot) {
+                        saldoAtual += 1.5;
+                        alert(`🤝 Empate! Devolvidos R$1,50.`);
+                    } else {
+                        alert(`😞 Você perdeu! Bot fez ${pontosBot}.`);
+                    }
+                    jogador.desafios++;
+                    if (typeof atualizarSaldoUI === 'function') atualizarSaldoUI();
+                    if (typeof atualizarPerfilUI === 'function') atualizarPerfilUI();
+                }
+            }
+        }
+
+        function iniciarTetris(modo) {
+            modoAtual = modo;
+            tabuleiro = criarTabuleiro();
+            peca = novaPeca();
+            proximaPeca = novaPeca();
+            pontuacao = 0;
+            linhas = 0;
+            gameOver = false;
+            desenhar();
+
+            if (tetrisInterval) clearInterval(tetrisInterval);
+            tetrisInterval = setInterval(() => mover(0, 1), 400);
+        }
+
+        function abrirTetris(modo) {
+            iniciarTetris(modo);
+            modalTetris.style.display = 'flex';
+        }
+
+        function tecladoHandler(e) {
+            const key = e.key;
+            e.preventDefault();
+            if (key === 'ArrowLeft') mover(-1, 0);
+            else if (key === 'ArrowRight') mover(1, 0);
+            else if (key === 'ArrowDown') mover(0, 1);
+            else if (key === 'ArrowUp') rotacionar();
+            else if (key === ' ') quedaRapida();
+        }
+
+        btnEsquerda.addEventListener('click', () => mover(-1, 0));
+        btnDireita.addEventListener('click', () => mover(1, 0));
+        btnDescida.addEventListener('click', () => mover(0, 1));
+        btnRotate.addEventListener('click', rotacionar);
+
+        btnFechar.addEventListener('click', () => {
+            modalTetris.style.display = 'none';
+            if (tetrisInterval) clearInterval(tetrisInterval);
+            tetrisInterval = null;
+            window.removeEventListener('keydown', tecladoHandler);
+        });
+
+        // Expõe a função globalmente (sem modificar o abrirJogo)
+        window.abrirTetris = abrirTetris;
+    })();
+</script>
+  <!-- ========== FIM DO BLOCO TETRIS ========== -->
+  <!-- ========================================== -->
+  <!--            JOGO 100 SLOTS (CASSINO)        -->
+  <!-- ========================================== -->
+  <!-- Modal do 100 Slots -->
+  <div id="modalSlots" class="modal-jogo" style="display: none;">
+   <div class="modal-conteudo" style="max-width: 550px; background: linear-gradient(145deg, #2a1e3c, #1a0f28); border: 3px solid gold;">
+    <h2 style="color: gold; text-shadow: 0 0 10px #ffaa00;">🎰 100 SLOTS - RIQUEZA 🎰</h2>
+    <div class="slots-container" style="background: #0a0a1a; border-radius: 30px; padding: 20px; border: 3px solid #d4af37; margin:15px 0;">
+     <!-- Grade 3x3 dos slots -->
+     <div class="slots-grid" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;">
+      <div id="slotsGrid" style="display: contents;"></div>
+     </div>
+    </div>
+    <div style="display: flex; justify-content: space-between; align-items: center; margin: 15px 0;">
+     <div style="background: #2a1e3c; padding: 10px 20px; border-radius: 30px; border: 1px solid gold;">
+      <span style="color:white;">Pontuação: </span><strong id="slotsPontuacao" style="color:gold; font-size:1.5rem;">0</strong>
+     </div>
+     <div style="background: #2a1e3c; padding: 10px 20px; border-radius: 30px; border: 1px solid gold;">
+      <span style="color:white;">Crédito: </span><strong id="slotsCredito" style="color:lime; font-size:1.5rem;">100</strong>
+     </div>
+    </div>
+    <div style="display: flex; gap: 15px; justify-content: center; margin: 10px 0;">
+     <button id="slotsGirar" style="background: linear-gradient(145deg, #d4af37, #b8860b); border: none; color: white; font-weight: bold; font-size: 2rem; padding: 15px 30px; border-radius: 60px; border-bottom: 5px solid #6b4f2e; cursor: pointer; flex:1;">🎲 GIRAR</button>
+    </div>
+    <div style="display: flex; gap: 20px; justify-content: center; margin-top: 15px;">
+     <button id="slotsApostar1" style="background: #1e4f6b; border: none; color: white; width:90px; height:90px; border-radius: 50%; font-weight: bold; font-size: 1.5rem; border-bottom: 5px solid #154256; cursor: pointer;">1</button>
+     <button id="slotsApostar5" style="background: #1e4f6b; border: none; color: white; width:90px; height:90px; border-radius: 50%; font-weight: bold; font-size: 1.5rem; border-bottom: 5px solid #154256; cursor: pointer;">5</button>
+     <button id="slotsApostar10" style="background: #1e4f6b; border: none; color: white; width:90px; height:90px; border-radius: 50%; font-weight: bold; font-size: 1.5rem; border-bottom: 5px solid #154256; cursor: pointer;">10</button>
+    </div>
+    <p class="instrucoes" style="margin-top:15px;">Combine 3 símbolos iguais em linha para ganhar! 💎🪙💰</p>
+    <button class="fechar-modal" id="fecharSlots" style="background:#b33; color:white; border:none; padding:15px 30px; border-radius:60px; font-weight:bold; font-size:1.2rem; cursor:pointer; margin-top:10px;">Fechar jogo</button>
+   </div>
+  </div>
+  <style>
+    .slot-cell {
+        background: #1e1e3f;
+        border-radius: 20px;
+        aspect-ratio: 1/1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 3rem;
+        border: 2px solid #d4af37;
+        box-shadow: 0 0 15px rgba(255,215,0,0.3);
+        transition: all 0.1s;
+    }
+    .slot-cell.win {
+        background: #4a2e5a;
+        box-shadow: 0 0 30px gold;
+        border-color: white;
+    }
+    @keyframes spinSlot {
+        0% { transform: rotateX(0deg); }
+        100% { transform: rotateX(360deg); }
+    }
+    .spinning {
+        animation: spinSlot 0.6s infinite linear;
+    }
+</style>
+  <script>
+    (function() {
+        const modalSlots = document.getElementById('modalSlots');
+        if (!modalSlots) return;
+
+        const slotsGrid = document.getElementById('slotsGrid');
+        const pontuacaoSpan = document.getElementById('slotsPontuacao');
+        const creditoSpan = document.getElementById('slotsCredito');
+        const btnGirar = document.getElementById('slotsGirar');
+        const btnApostar1 = document.getElementById('slotsApostar1');
+        const btnApostar5 = document.getElementById('slotsApostar5');
+        const btnApostar10 = document.getElementById('slotsApostar10');
+        const btnFechar = document.getElementById('fecharSlots');
+
+        const simbolos = [
+            { emoji: '7️⃣', peso: 10, valor: 100 },
+            { emoji: '💎', peso: 5, valor: 200 },
+            { emoji: '🪙', peso: 20, valor: 30 },
+            { emoji: '💰', peso: 15, valor: 50 },
+            { emoji: '👑', peso: 12, valor: 80 },
+            { emoji: '🏆', peso: 8, valor: 120 },
+            { emoji: '💵', peso: 18, valor: 40 },
+            { emoji: '⭐', peso: 12, valor: 60 }
+        ];
+
+        let grade = [];
+        let apostaAtual = 1;
+        let pontuacao = 0;
+        let creditos = 100;
+        let modoAtual = 'individual';
+        let spinning = false;
+
+        function sortearSimbolo() {
+            const totalPeso = simbolos.reduce((acc, s) => acc + s.peso, 0);
+            let rand = Math.random() * totalPeso;
+            for (let s of simbolos) {
+                if (rand < s.peso) return s;
+                rand -= s.peso;
+            }
+            return simbolos[0];
+        }
+
+        function gerarGrade() {
+            const novaGrade = [];
+            for (let i = 0; i < 3; i++) {
+                const linha = [];
+                for (let j = 0; j < 3; j++) {
+                    linha.push(sortearSimbolo());
+                }
+                novaGrade.push(linha);
+            }
+            return novaGrade;
+        }
+
+        function desenharGrade(gradeAtual) {
+            slotsGrid.innerHTML = '';
+            for (let i = 0; i < 3; i++) {
+                for (let j = 0; j < 3; j++) {
+                    const celula = document.createElement('div');
+                    celula.className = 'slot-cell';
+                    celula.dataset.linha = i;
+                    celula.dataset.coluna = j;
+                    celula.innerText = gradeAtual[i][j].emoji;
+                    slotsGrid.appendChild(celula);
+                }
+            }
+        }
+
+        function calcularPontuacao(gradeAtual, aposta) {
+            let pontos = 0;
+            for (let i = 0; i < 3; i++) {
+                const linha = gradeAtual[i];
+                if (linha[0].emoji === linha[1].emoji && linha[1].emoji === linha[2].emoji) {
+                    pontos += linha[0].valor * aposta;
+                }
+            }
+            return pontos;
+        }
+
+        function atualizarDisplay() {
+            pontuacaoSpan.innerText = pontuacao;
+            creditoSpan.innerText = creditos;
+        }
+
+        function girar() {
+            if (spinning) return;
+            spinning = true;
+
+            const celulas = document.querySelectorAll('.slot-cell');
+            celulas.forEach(c => c.classList.add('spinning'));
+
+            if (creditos < apostaAtual) {
+                alert('Créditos insuficientes! Faça uma aposta menor.');
+                spinning = false;
+                celulas.forEach(c => c.classList.remove('spinning'));
+                return;
+            }
+            creditos -= apostaAtual;
+
+            setTimeout(() => {
+                const novaGrade = gerarGrade();
+                grade = novaGrade;
+                desenharGrade(novaGrade);
+                celulas.forEach(c => c.classList.remove('spinning'));
+
+                const ganho = calcularPontuacao(novaGrade, apostaAtual);
+                if (ganho > 0) {
+                    creditos += ganho;
+                    pontuacao += ganho;
+                    alert(`🎉 Ganhou ${ganho} créditos!`);
+                }
+                atualizarDisplay();
+                spinning = false;
+            }, 800);
+        }
+
+        function setAposta(valor) {
+            apostaAtual = valor;
+        }
+
+        function abrirSlots(modo) {
+            modoAtual = modo;
+            creditos = 100;
+            pontuacao = 0;
+            grade = gerarGrade();
+            desenharGrade(grade);
+            atualizarDisplay();
+            modalSlots.style.display = 'flex';
+        }
+
+        btnGirar.addEventListener('click', girar);
+        btnApostar1.addEventListener('click', () => setAposta(1));
+        btnApostar5.addEventListener('click', () => setAposta(5));
+        btnApostar10.addEventListener('click', () => setAposta(10));
+
+        btnFechar.addEventListener('click', () => {
+            modalSlots.style.display = 'none';
+            if (modoAtual === 'desafio') {
+                if (typeof saldoAtual !== 'undefined' && typeof jogador !== 'undefined') {
+                    const pontosBot = Math.floor(Math.random() * 500);
+                    if (pontuacao > pontosBot) {
+                        saldoAtual += 3.0;
+                        jogador.vitorias++;
+                        alert(`🏆 Desafio vencido! Você fez ${pontuacao} pontos, bot fez ${pontosBot}. Ganhou R$3,00!`);
+                    } else if (pontuacao === pontosBot) {
+                        saldoAtual += 1.5;
+                        alert(`🤝 Empate! Devolvidos R$1,50.`);
+                    } else {
+                        alert(`😞 Você perdeu! Bot fez ${pontosBot}.`);
+                    }
+                    jogador.desafios++;
+                    if (typeof atualizarSaldoUI === 'function') atualizarSaldoUI();
+                    if (typeof atualizarPerfilUI === 'function') atualizarPerfilUI();
+                }
+            }
+        });
+
+        window.abrirSlots = abrirSlots;
+    })();
+</script>
+  <!-- ========== FIM DO BLOCO 100 SLOTS ========== -->
+  <!-- ========================================== -->
+  <!--           JOGO CANDY CRUSH LITE            -->
+  <!-- ========================================== -->
+  <!-- Modal do Candy Crush -->
+  <div id="modalCandy" class="modal-jogo" style="display: none;">
+   <div class="modal-conteudo" style="max-width: 550px; background: linear-gradient(145deg, #f9c1d9, #ffd9b0); border: 3px solid #ff69b4;">
+    <h2 style="color: #8b4513; text-shadow: 0 0 10px #ffa500;">🍭 CANDY CRUSH LITE 🍬</h2>
+    <div style="background: #ffe4e1; border-radius: 30px; padding: 15px; border: 3px solid #ffb6c1; margin:10px 0;">
+     <canvas id="candyCanvas" width="400" height="400" style="width:100%; max-width:400px; height:auto; background:#fff0f5; border-radius:20px; border:2px solid #ff69b4;"></canvas>
+    </div>
+    <div style="display: flex; justify-content: space-between; align-items: center; margin: 15px 0;">
+     <div style="background: #8b4513; padding: 10px 20px; border-radius: 30px;">
+      <span style="color:white;">Pontuação: </span><strong id="candyPontuacao" style="color:gold; font-size:1.5rem;">0</strong>
+     </div>
+    </div>
+    <p class="instrucoes" style="margin:10px 0;">Clique em um doce e depois em outro adjacente para trocar. Forme 3 ou mais em linha.</p>
+    <button class="fechar-modal" id="fecharCandy" style="background:#b33; color:white; border:none; padding:15px 30px; border-radius:60px; font-weight:bold; font-size:1.2rem; cursor:pointer; margin-top:5px;">Fechar jogo</button>
+   </div>
+  </div>
+  <style>
+    #candyCanvas {
+        cursor: pointer;
+        touch-action: none;
+    }
+</style>
+  <script>
+    (function() {
+        const modalCandy = document.getElementById('modalCandy');
+        if (!modalCandy) return;
+
+        const canvas = document.getElementById('candyCanvas');
+        const pontuacaoSpan = document.getElementById('candyPontuacao');
+        const btnFechar = document.getElementById('fecharCandy');
+
+        const ctx = canvas.getContext('2d');
+        const TAM = 50;
+        const LINHAS = 8;
+        const COLUNAS = 8;
+
+        const DOCES = ['🍬', '🍭', '🍫', '🍪', '🧁', '🍩'];
+        let grade = [];
+        let pontuacao = 0;
+        let modoAtual = 'individual';
+        let selecionado = null;
+
+        function gerarGradeInicial() {
+            const novaGrade = [];
+            for (let l = 0; l < LINHAS; l++) {
+                const linha = [];
+                for (let c = 0; c < COLUNAS; c++) {
+                    let doce;
+                    do {
+                        doce = Math.floor(Math.random() * DOCES.length);
+                    } while (c >= 2 && linha[c-1] === doce && linha[c-2] === doce);
+                    if (l >= 2 && novaGrade[l-1][c] === doce && novaGrade[l-2][c] === doce) {
+                        doce = (doce + 1) % DOCES.length;
+                    }
+                    linha.push(doce);
+                }
+                novaGrade.push(linha);
+            }
+            return novaGrade;
+        }
+
+        function desenharGrade() {
+            ctx.clearRect(0, 0, 400, 400);
+            for (let l = 0; l < LINHAS; l++) {
+                for (let c = 0; c < COLUNAS; c++) {
+                    const x = c * TAM;
+                    const y = l * TAM;
+                    ctx.fillStyle = '#ffe0f0';
+                    ctx.fillRect(x, y, TAM, TAM);
+                    ctx.strokeStyle = '#ffb6c1';
+                    ctx.lineWidth = 2;
+                    ctx.strokeRect(x, y, TAM, TAM);
+                    ctx.font = '35px Arial';
+                    ctx.textAlign = 'center';
+                    ctx.textBaseline = 'middle';
+                    ctx.fillStyle = 'black';
+                    ctx.fillText(DOCES[grade[l][c]], x + TAM/2, y + TAM/2);
+                }
+            }
+            pontuacaoSpan.innerText = pontuacao;
+        }
+
+        function dentro(l, c) {
+            return l >= 0 && l < LINHAS && c >= 0 && c < COLUNAS;
+        }
+
+        function trocar(l1, c1, l2, c2) {
+            const temp = grade[l1][c1];
+            grade[l1][c1] = grade[l2][c2];
+            grade[l2][c2] = temp;
+        }
+
+        function verificarCombinacoes() {
+            let combinou = false;
+            let pontosGanhos = 0;
+            const marcados = Array(LINHAS).fill().map(() => Array(COLUNAS).fill(false));
+
+            for (let l = 0; l < LINHAS; l++) {
+                for (let c = 0; c < COLUNAS - 2; c++) {
+                    if (grade[l][c] === grade[l][c+1] && grade[l][c] === grade[l][c+2]) {
+                        let fim = c+2;
+                        while (fim+1 < COLUNAS && grade[l][fim+1] === grade[l][c]) fim++;
+                        for (let k = c; k <= fim; k++) marcados[l][k] = true;
+                        c = fim;
+                    }
+                }
+            }
+
+            for (let c = 0; c < COLUNAS; c++) {
+                for (let l = 0; l < LINHAS - 2; l++) {
+                    if (grade[l][c] === grade[l+1][c] && grade[l][c] === grade[l+2][c]) {
+                        let fim = l+2;
+                        while (fim+1 < LINHAS && grade[fim+1][c] === grade[l][c]) fim++;
+                        for (let k = l; k <= fim; k++) marcados[k][c] = true;
+                        l = fim;
+                    }
+                }
+            }
+
+            let removidos = 0;
+            for (let l = 0; l < LINHAS; l++) {
+                for (let c = 0; c < COLUNAS; c++) {
+                    if (marcados[l][c]) {
+                        grade[l][c] = -1;
+                        removidos++;
+                    }
+                }
+            }
+
+            if (removidos > 0) {
+                combinou = true;
+                pontosGanhos = removidos * 10;
+                pontuacao += pontosGanhos;
+
+                for (let c = 0; c < COLUNAS; c++) {
+                    for (let l = LINHAS-1; l >= 0; l--) {
+                        if (grade[l][c] === -1) {
+                            for (let k = l-1; k >= 0; k--) {
+                                if (grade[k][c] !== -1) {
+                                    grade[l][c] = grade[k][c];
+                                    grade[k][c] = -1;
+                                    break;
+                                }
+                            }
+                            if (grade[l][c] === -1) {
+                                grade[l][c] = Math.floor(Math.random() * DOCES.length);
+                            }
+                        }
+                    }
+                }
+            }
+
+            return { combinou, pontos: pontosGanhos };
+        }
+
+        function resolverCombinacoes() {
+            let algo;
+            do {
+                algo = verificarCombinacoes().combinou;
+            } while (algo);
+            desenharGrade();
+        }
+
+        function handleClick(e) {
+            const rect = canvas.getBoundingClientRect();
+            const scaleX = canvas.width / rect.width;
+            const scaleY = canvas.height / rect.height;
+
+            let clientX, clientY;
+            if (e.touches) {
+                clientX = e.touches[0].clientX;
+                clientY = e.touches[0].clientY;
+                e.preventDefault();
+            } else {
+                clientX = e.clientX;
+                clientY = e.clientY;
+            }
+
+            const canvasX = (clientX - rect.left) * scaleX;
+            const canvasY = (clientY - rect.top) * scaleY;
+
+            const col = Math.floor(canvasX / TAM);
+            const linha = Math.floor(canvasY / TAM);
+
+            if (!dentro(linha, col)) return;
+
+            if (selecionado === null) {
+                selecionado = { linha, col };
+            } else {
+                const l1 = selecionado.linha, c1 = selecionado.col;
+                const l2 = linha, c2 = col;
+                if ((Math.abs(l1 - l2) === 1 && c1 === c2) || (Math.abs(c1 - c2) === 1 && l1 === l2)) {
+                    trocar(l1, c1, l2, c2);
+                    desenharGrade();
+                    const result = verificarCombinacoes();
+                    if (result.combinou) {
+                        pontuacao += result.pontos;
+                        resolverCombinacoes();
+                    } else {
+                        trocar(l1, c1, l2, c2);
+                        desenharGrade();
+                    }
+                }
+                selecionado = null;
+            }
+        }
+
+        function iniciarCandy(modo) {
+            modoAtual = modo;
+            grade = gerarGradeInicial();
+            pontuacao = 0;
+            selecionado = null;
+            desenharGrade();
+            modalCandy.style.display = 'flex';
+        }
+
+        canvas.addEventListener('click', handleClick);
+        canvas.addEventListener('touchstart', handleClick);
+
+        btnFechar.addEventListener('click', () => {
+            modalCandy.style.display = 'none';
+            if (modoAtual === 'desafio') {
+                if (typeof saldoAtual !== 'undefined' && typeof jogador !== 'undefined') {
+                    const pontosBot = Math.floor(Math.random() * (pontuacao + 200));
+                    if (pontuacao > pontosBot) {
+                        saldoAtual += 3.0;
+                        jogador.vitorias++;
+                        alert(`🏆 Desafio vencido! Você fez ${pontuacao} pontos, bot fez ${pontosBot}. Ganhou R$3,00!`);
+                    } else if (pontuacao === pontosBot) {
+                        saldoAtual += 1.5;
+                        alert(`🤝 Empate! Devolvidos R$1,50.`);
+                    } else {
+                        alert(`😞 Você perdeu! Bot fez ${pontosBot}.`);
+                    }
+                    jogador.desafios++;
+                    if (typeof atualizarSaldoUI === 'function') atualizarSaldoUI();
+                    if (typeof atualizarPerfilUI === 'function') atualizarPerfilUI();
+                }
+            }
+        });
+
+        window.abrirCandy = iniciarCandy;
+    })();
+</script>
+  <!-- ========== FIM DO BLOCO CANDY CRUSH LITE ========== -->
+  <!-- ========================================== -->
+  <!--              JOGO FLAPPY BIRD              -->
+  <!-- ========================================== -->
+  <!-- Modal do Flappy Bird -->
+  <div id="modalFlappy" class="modal-jogo" style="display: none;">
+   <div class="modal-conteudo" style="max-width: 550px; background: linear-gradient(145deg, #1f3a4b, #0f2838); border: 3px solid #ffae42;">
+    <h2 style="color:#fbffb9; text-shadow: 2px 2px 0 #aa7700;">🐦 FLAPPY BIRD</h2>
+    <div class="canvas-container">
+     <canvas id="flappyCanvas" width="400" height="600" style="width:100%; max-width:400px; height:auto; aspect-ratio:2/3; background:#87CEEB; border-radius:20px; border:2px solid #ffae42;"></canvas>
+    </div>
+    <div style="display: flex; justify-content: space-around; margin: 10px 0;">
+     <span style="font-size:1.2rem;">Pontuação: <strong id="flappyPontuacao" style="color:gold; font-size:1.5rem;">0</strong></span>
+    </div>
+    <!-- Controles touch para celular (botões maiores) -->
+    <div class="controles-touch" style="margin-top:15px;">
+     <div class="linha-botoes" style="gap:20px; justify-content:center;">
+      <button class="btn-seta" id="flappyPular" style="width:90px; height:90px; font-size:2.5rem;">⬆️</button>
+     </div>
+    </div>
+    <p class="instrucoes" style="margin:10px 0;">Toque no botão ou pressione espaço para pular.
+     <br>
+     Desvie dos canos!</p>
+    <button class="fechar-modal" id="fecharFlappy" style="background:#b33; color:white; border:none; padding:15px 30px; border-radius:60px; font-weight:bold; font-size:1.2rem; cursor:pointer; margin-top:5px;">Fechar jogo</button>
+   </div>
+  </div>
+  <script>
+    (function() {
+        const modalFlappy = document.getElementById('modalFlappy');
+        if (!modalFlappy) return;
+
+        const canvas = document.getElementById('flappyCanvas');
+        const pontuacaoSpan = document.getElementById('flappyPontuacao');
+        const btnPular = document.getElementById('flappyPular');
+        const btnFechar = document.getElementById('fecharFlappy');
+
+        const ctx = canvas.getContext('2d');
+        let flappyInterval = null;
+        let modoAtual = 'individual';
+
+        // Constantes do jogo
+        const GRAVIDADE = 0.5;
+        const IMPULSO = -8;
+        const LARGURA_CANO = 60;
+        const ESPACO_CANO = 150;
+        const VELOCIDADE = 2;
+
+        // Variáveis do jogo
+        let passaro = { y: 200, vy: 0 };
+        let canos = [];
+        let pontuacao = 0;
+        let gameOver = false;
+        let frame = 0;
+
+        function reiniciarJogo() {
+            passaro = { y: 200, vy: 0 };
+            canos = [];
+            pontuacao = 0;
+            gameOver = false;
+            frame = 0;
+        }
+
+        function adicionarCano() {
+            const altura = Math.floor(Math.random() * 300) + 100; // 100 a 400
+            canos.push({
+                x: 400,
+                altura: altura,
+                passou: false
+            });
+        }
+
+        function atualizar() {
+            if (gameOver) return;
+
+            // Gravidade
+            passaro.vy += GRAVIDADE;
+            passaro.y += passaro.vy;
+
+            // Limites da tela
+            if (passaro.y < 0) passaro.y = 0;
+            if (passaro.y > 600) {
+                gameOver = true;
+                finalizarJogo();
+                return;
+            }
+
+            // Mover canos
+            for (let i = canos.length - 1; i >= 0; i--) {
+                canos[i].x -= VELOCIDADE;
+                if (canos[i].x + LARGURA_CANO < 0) {
+                    canos.splice(i, 1);
+                }
+            }
+
+            // Adicionar novos canos a cada 120 frames
+            frame++;
+            if (frame % 120 === 0) {
+                adicionarCano();
+            }
+
+            // Colisão com canos
+            for (let cano of canos) {
+                if (cano.x < 70 && cano.x + LARGURA_CANO > 50) { // pássaro na área do cano
+                    if (passaro.y < cano.altura || passaro.y > cano.altura + ESPACO_CANO) {
+                        gameOver = true;
+                        finalizarJogo();
+                        return;
+                    }
+                }
+                // Pontuação
+                if (!cano.passou && cano.x + LARGURA_CANO < 50) {
+                    cano.passou = true;
+                    pontuacao++;
+                }
+            }
+
+            desenhar();
+        }
+
+        function desenhar() {
+            ctx.clearRect(0, 0, 400, 600);
+
+            // Céu
+            ctx.fillStyle = '#87CEEB';
+            ctx.fillRect(0, 0, 400, 600);
+
+            // Canos
+            ctx.fillStyle = '#228B22';
+            for (let cano of canos) {
+                // Cano superior
+                ctx.fillRect(cano.x, 0, LARGURA_CANO, cano.altura);
+                // Cano inferior
+                ctx.fillRect(cano.x, cano.altura + ESPACO_CANO, LARGURA_CANO, 600 - (cano.altura + ESPACO_CANO));
+            }
+
+            // Pássaro (um círculo amarelo)
+            ctx.fillStyle = '#FFD700';
+            ctx.beginPath();
+            ctx.arc(60, passaro.y, 15, 0, 2 * Math.PI);
+            ctx.fill();
+            ctx.fillStyle = 'black';
+            ctx.beginPath();
+            ctx.arc(65, passaro.y-5, 3, 0, 2 * Math.PI);
+            ctx.fill();
+
+            // Pontuação
+            pontuacaoSpan.innerText = pontuacao;
+        }
+
+        function pular() {
+            if (gameOver) return;
+            passaro.vy = IMPULSO;
+        }
+
+        function finalizarJogo() {
+            if (flappyInterval) clearInterval(flappyInterval);
+            flappyInterval = null;
+            alert(`Fim de jogo! Pontuação: ${pontuacao}`);
+
+            if (modoAtual === 'desafio') {
+                if (typeof saldoAtual !== 'undefined' && typeof jogador !== 'undefined') {
+                    const pontosBot = Math.floor(Math.random() * (pontuacao + 20));
+                    if (pontuacao > pontosBot) {
+                        saldoAtual += 3.0;
+                        jogador.vitorias++;
+                        alert(`🏆 Desafio vencido! Você fez ${pontuacao} pontos, bot fez ${pontosBot}. Ganhou R$3,00!`);
+                    } else if (pontuacao === pontosBot) {
+                        saldoAtual += 1.5;
+                        alert(`🤝 Empate! Devolvidos R$1,50.`);
+                    } else {
+                        alert(`😞 Você perdeu! Bot fez ${pontosBot}.`);
+                    }
+                    jogador.desafios++;
+                    if (typeof atualizarSaldoUI === 'function') atualizarSaldoUI();
+                    if (typeof atualizarPerfilUI === 'function') atualizarPerfilUI();
+                }
+            }
+        }
+
+        function iniciarFlappy(modo) {
+            modoAtual = modo;
+            reiniciarJogo();
+            modalFlappy.style.display = 'flex';
+            if (flappyInterval) clearInterval(flappyInterval);
+            flappyInterval = setInterval(atualizar, 1000/60); // 60 FPS
+        }
+
+        // Eventos
+        btnPular.addEventListener('click', pular);
+        window.addEventListener('keydown', (e) => {
+            if (e.key === ' ' && modalFlappy.style.display === 'flex') {
+                e.preventDefault();
+                pular();
+            }
+        });
+
+        btnFechar.addEventListener('click', () => {
+            modalFlappy.style.display = 'none';
+            if (flappyInterval) clearInterval(flappyInterval);
+            flappyInterval = null;
+        });
+
+        window.abrirFlappy = iniciarFlappy;
+    })();
+</script>
+  <!-- ========== FIM DO BLOCO FLAPPY BIRD ========== -->
+  <!-- ========================================== -->
+  <!--                  JOGO 2048                  -->
+  <!-- ========================================== -->
+  <!-- Modal do 2048 -->
+  <div id="modal2048" class="modal-jogo" style="display: none;">
+   <div class="modal-conteudo" style="max-width: 550px; background: linear-gradient(145deg, #faf0e6, #f5e6d3); border: 3px solid #b8860b;">
+    <h2 style="color: #8b4513; text-shadow: 2px 2px 0 #ffaa00;">🔢 2048</h2>
+    <div class="canvas-container">
+     <canvas id="game2048Canvas" width="400" height="400" style="width:100%; max-width:400px; height:auto; background:#bbada0; border-radius:20px; border:2px solid #b8860b;"></canvas>
+    </div>
+    <div style="display: flex; justify-content: space-around; margin: 10px 0;">
+     <span style="font-size:1.2rem;">Pontuação: <strong id="score2048" style="color:gold; font-size:1.5rem;">0</strong></span>
+    </div>
+    <!-- Controles touch para celular (botões maiores) -->
+    <div class="controles-touch" style="margin-top:15px;">
+     <div class="linha-botoes" style="gap:20px; justify-content:center;">
+      <button class="btn-seta" id="up2048" style="width:90px; height:90px; font-size:2.5rem;">▲</button>
+     </div>
+     <div class="linha-botoes" style="gap:20px; justify-content:center; margin-top:10px;">
+      <button class="btn-seta" id="left2048" style="width:90px; height:90px; font-size:2.5rem;">◀</button>
+      <button class="btn-seta" id="down2048" style="width:90px; height:90px; font-size:2.5rem;">▼</button>
+      <button class="btn-seta" id="right2048" style="width:90px; height:90px; font-size:2.5rem;">▶</button>
+     </div>
+    </div>
+    <p class="instrucoes" style="margin:10px 0;">Use as setas do teclado ou os botões para mover.
+     <br>
+     Combine números iguais para chegar ao 2048!</p>
+    <button class="fechar-modal" id="fechar2048" style="background:#b33; color:white; border:none; padding:15px 30px; border-radius:60px; font-weight:bold; font-size:1.2rem; cursor:pointer; margin-top:5px;">Fechar jogo</button>
+   </div>
+  </div>
+  <script>
+    (function() {
+        const modal2048 = document.getElementById('modal2048');
+        if (!modal2048) return;
+
+        const canvas = document.getElementById('game2048Canvas');
+        const scoreSpan = document.getElementById('score2048');
+        const btnUp = document.getElementById('up2048');
+        const btnDown = document.getElementById('down2048');
+        const btnLeft = document.getElementById('left2048');
+        const btnRight = document.getElementById('right2048');
+        const btnFechar = document.getElementById('fechar2048');
+
+        const ctx = canvas.getContext('2d');
+        let grade = [];
+        let pontuacao = 0;
+        let modoAtual = 'individual';
+        let gameOver = false;
+
+        const TAM = 100; // cada célula 100x100
+        const CORES = {
+            0: '#cdc1b4',
+            2: '#eee4da',
+            4: '#ede0c8',
+            8: '#f2b179',
+            16: '#f59563',
+            32: '#f67c5f',
+            64: '#f65e3b',
+            128: '#edcf72',
+            256: '#edcc61',
+            512: '#edc850',
+            1024: '#edc53f',
+            2048: '#edc22e',
+            default: '#3c3a32'
+        };
+
+        function iniciarGrade() {
+            grade = [
+                [0,0,0,0],
+                [0,0,0,0],
+                [0,0,0,0],
+                [0,0,0,0]
+            ];
+            adicionarNovo();
+            adicionarNovo();
+        }
+
+        function adicionarNovo() {
+            let vazios = [];
+            for (let i = 0; i < 4; i++) {
+                for (let j = 0; j < 4; j++) {
+                    if (grade[i][j] === 0) vazios.push({i,j});
+                }
+            }
+            if (vazios.length === 0) return;
+            const {i, j} = vazios[Math.floor(Math.random() * vazios.length)];
+            grade[i][j] = Math.random() < 0.9 ? 2 : 4;
+        }
+
+        function desenhar() {
+            ctx.clearRect(0, 0, 400, 400);
+            for (let i = 0; i < 4; i++) {
+                for (let j = 0; j < 4; j++) {
+                    const valor = grade[i][j];
+                    const x = j * TAM;
+                    const y = i * TAM;
+                    ctx.fillStyle = CORES[valor] || CORES.default;
+                    ctx.fillRect(x, y, TAM-5, TAM-5);
+                    ctx.fillStyle = valor > 4 ? '#f9f6f2' : '#776e65';
+                    ctx.font = 'bold 36px Arial';
+                    ctx.textAlign = 'center';
+                    ctx.textBaseline = 'middle';
+                    if (valor !== 0) {
+                        ctx.fillText(valor, x + TAM/2, y + TAM/2);
+                    }
+                }
+            }
+            scoreSpan.innerText = pontuacao;
+        }
+
+        function moverEsquerda() {
+            let movido = false;
+            for (let i = 0; i < 4; i++) {
+                let linha = grade[i].filter(v => v !== 0);
+                for (let j = 0; j < linha.length - 1; j++) {
+                    if (linha[j] === linha[j+1]) {
+                        linha[j] *= 2;
+                        pontuacao += linha[j];
+                        linha.splice(j+1, 1);
+                        movido = true;
+                    }
+                }
+                while (linha.length < 4) linha.push(0);
+                if (JSON.stringify(grade[i]) !== JSON.stringify(linha)) movido = true;
+                grade[i] = linha;
+            }
+            return movido;
+        }
+
+        function moverDireita() {
+            let movido = false;
+            for (let i = 0; i < 4; i++) {
+                let linha = grade[i].filter(v => v !== 0);
+                for (let j = linha.length - 1; j > 0; j--) {
+                    if (linha[j] === linha[j-1]) {
+                        linha[j] *= 2;
+                        pontuacao += linha[j];
+                        linha.splice(j-1, 1);
+                        j--;
+                        movido = true;
+                    }
+                }
+                while (linha.length < 4) linha.unshift(0);
+                if (JSON.stringify(grade[i]) !== JSON.stringify(linha)) movido = true;
+                grade[i] = linha;
+            }
+            return movido;
+        }
+
+        function moverCima() {
+            let movido = false;
+            for (let j = 0; j < 4; j++) {
+                let coluna = [grade[0][j], grade[1][j], grade[2][j], grade[3][j]].filter(v => v !== 0);
+                for (let i = 0; i < coluna.length - 1; i++) {
+                    if (coluna[i] === coluna[i+1]) {
+                        coluna[i] *= 2;
+                        pontuacao += coluna[i];
+                        coluna.splice(i+1, 1);
+                        movido = true;
+                    }
+                }
+                while (coluna.length < 4) coluna.push(0);
+                for (let i = 0; i < 4; i++) {
+                    if (grade[i][j] !== coluna[i]) movido = true;
+                    grade[i][j] = coluna[i];
+                }
+            }
+            return movido;
+        }
+
+        function moverBaixo() {
+            let movido = false;
+            for (let j = 0; j < 4; j++) {
+                let coluna = [grade[0][j], grade[1][j], grade[2][j], grade[3][j]].filter(v => v !== 0);
+                for (let i = coluna.length - 1; i > 0; i--) {
+                    if (coluna[i] === coluna[i-1]) {
+                        coluna[i] *= 2;
+                        pontuacao += coluna[i];
+                        coluna.splice(i-1, 1);
+                        i--;
+                        movido = true;
+                    }
+                }
+                while (coluna.length < 4) coluna.unshift(0);
+                for (let i = 0; i < 4; i++) {
+                    if (grade[i][j] !== coluna[i]) movido = true;
+                    grade[i][j] = coluna[i];
+                }
+            }
+            return movido;
+        }
+
+        function mover(direcao) {
+            if (gameOver) return;
+            let movido = false;
+            switch(direcao) {
+                case 'esquerda': movido = moverEsquerda(); break;
+                case 'direita': movido = moverDireita(); break;
+                case 'cima': movido = moverCima(); break;
+                case 'baixo': movido = moverBaixo(); break;
+            }
+            if (movido) {
+                adicionarNovo();
+                desenhar();
+                if (verificarFim()) {
+                    gameOver = true;
+                    finalizarJogo();
+                }
+            }
+        }
+
+        function verificarFim() {
+            // Se houver zero, não acabou
+            for (let i = 0; i < 4; i++) {
+                for (let j = 0; j < 4; j++) {
+                    if (grade[i][j] === 0) return false;
+                }
+            }
+            // Verifica se há adjacentes iguais
+            for (let i = 0; i < 4; i++) {
+                for (let j = 0; j < 4; j++) {
+                    if (j < 3 && grade[i][j] === grade[i][j+1]) return false;
+                    if (i < 3 && grade[i][j] === grade[i+1][j]) return false;
+                }
+            }
+            return true;
+        }
+
+        function finalizarJogo() {
+            alert(`Fim de jogo! Pontuação: ${pontuacao}`);
+            if (modoAtual === 'desafio') {
+                if (typeof saldoAtual !== 'undefined' && typeof jogador !== 'undefined') {
+                    const pontosBot = Math.floor(Math.random() * (pontuacao + 500));
+                    if (pontuacao > pontosBot) {
+                        saldoAtual += 3.0;
+                        jogador.vitorias++;
+                        alert(`🏆 Desafio vencido! Você fez ${pontuacao} pontos, bot fez ${pontosBot}. Ganhou R$3,00!`);
+                    } else if (pontuacao === pontosBot) {
+                        saldoAtual += 1.5;
+                        alert(`🤝 Empate! Devolvidos R$1,50.`);
+                    } else {
+                        alert(`😞 Você perdeu! Bot fez ${pontosBot}.`);
+                    }
+                    jogador.desafios++;
+                    if (typeof atualizarSaldoUI === 'function') atualizarSaldoUI();
+                    if (typeof atualizarPerfilUI === 'function') atualizarPerfilUI();
+                }
+            }
+        }
+
+        function iniciar2048(modo) {
+            modoAtual = modo;
+            pontuacao = 0;
+            iniciarGrade();
+            desenhar();
+            modal2048.style.display = 'flex';
+            gameOver = false;
+        }
+
+        // Eventos de teclado
+        window.addEventListener('keydown', (e) => {
+            if (modal2048.style.display !== 'flex') return;
+            e.preventDefault();
+            if (e.key === 'ArrowLeft') mover('esquerda');
+            else if (e.key === 'ArrowRight') mover('direita');
+            else if (e.key === 'ArrowUp') mover('cima');
+            else if (e.key === 'ArrowDown') mover('baixo');
+        });
+
+        // Eventos de botões touch
+        btnLeft.addEventListener('click', () => mover('esquerda'));
+        btnRight.addEventListener('click', () => mover('direita'));
+        btnUp.addEventListener('click', () => mover('cima'));
+        btnDown.addEventListener('click', () => mover('baixo'));
+
+        btnFechar.addEventListener('click', () => {
+            modal2048.style.display = 'none';
+        });
+
+        window.abrir2048 = iniciar2048;
+    })();
+</script>
+  <!-- ========== FIM DO BLOCO 2048 ========== -->
+  <!-- ========================================== -->
+  <!--                  JOGO PONG                  -->
+  <!-- ========================================== -->
+  <!-- Modal do Pong -->
+  <div id="modalPong" class="modal-jogo" style="display: none;">
+   <div class="modal-conteudo" style="max-width: 550px; background: linear-gradient(145deg, #1f3a4b, #0f2838); border: 3px solid #ffae42;">
+    <h2 style="color:#fbffb9; text-shadow: 2px 2px 0 #aa7700;">🏓 PONG</h2>
+    <div class="canvas-container">
+     <canvas id="pongCanvas" width="600" height="400" style="width:100%; max-width:600px; height:auto; aspect-ratio:3/2; background:#0d1f2c; border-radius:20px; border:2px solid #ffae42;"></canvas>
+    </div>
+    <div style="display: flex; justify-content: space-around; margin: 10px 0;">
+     <span style="font-size:1.2rem;">Placar: <strong id="pongPlacar" style="color:gold; font-size:1.5rem;">0 - 0</strong></span>
+    </div>
+    <!-- Controles touch para celular (botões maiores) -->
+    <div class="controles-touch" style="margin-top:15px;">
+     <div class="linha-botoes" style="gap:20px; justify-content:center;">
+      <button class="btn-seta" id="pongCima" style="width:90px; height:90px; font-size:2.5rem;">▲</button>
+      <button class="btn-seta" id="pongBaixo" style="width:90px; height:90px; font-size:2.5rem;">▼</button>
+     </div>
+    </div>
+    <p class="instrucoes" style="margin:10px 0;">Use os botões ▲▼ ou as setas do teclado para mover sua raquete.
+     <br>
+     Quem fizer 5 pontos vence!</p>
+    <button class="fechar-modal" id="fecharPong" style="background:#b33; color:white; border:none; padding:15px 30px; border-radius:60px; font-weight:bold; font-size:1.2rem; cursor:pointer; margin-top:5px;">Fechar jogo</button>
+   </div>
+  </div>
+  <script>
+    (function() {
+        const modalPong = document.getElementById('modalPong');
+        if (!modalPong) return;
+
+        const canvas = document.getElementById('pongCanvas');
+        const placarSpan = document.getElementById('pongPlacar');
+        const btnCima = document.getElementById('pongCima');
+        const btnBaixo = document.getElementById('pongBaixo');
+        const btnFechar = document.getElementById('fecharPong');
+
+        const ctx = canvas.getContext('2d');
+        let pongInterval = null;
+        let modoAtual = 'individual';
+
+        // Constantes do jogo
+        const LARGURA = 600;
+        const ALTURA = 400;
+        const RAQUETE_LARGURA = 10;
+        const RAQUETE_ALTURA = 80;
+        const BOLA_TAM = 10;
+        const VELOCIDADE_BOLA = 4;
+        const VELOCIDADE_RAQUETE = 6;
+        const PONTOS_MAX = 5;
+
+        // Variáveis do jogo
+        let jogadorY = ALTURA/2 - RAQUETE_ALTURA/2;
+        let botY = ALTURA/2 - RAQUETE_ALTURA/2;
+        let bolaX = LARGURA/2;
+        let bolaY = ALTURA/2;
+        let bolaVX = VELOCIDADE_BOLA;
+        let bolaVY = VELOCIDADE_BOLA;
+        let pontosJogador = 0;
+        let pontosBot = 0;
+        let gameOver = false;
+        let vencedor = null;
+
+        function reiniciarJogo() {
+            jogadorY = ALTURA/2 - RAQUETE_ALTURA/2;
+            botY = ALTURA/2 - RAQUETE_ALTURA/2;
+            bolaX = LARGURA/2;
+            bolaY = ALTURA/2;
+            bolaVX = VELOCIDADE_BOLA * (Math.random() > 0.5 ? 1 : -1);
+            bolaVY = VELOCIDADE_BOLA * (Math.random() > 0.5 ? 1 : -1);
+            pontosJogador = 0;
+            pontosBot = 0;
+            gameOver = false;
+            vencedor = null;
+        }
+
+        function atualizar() {
+            if (gameOver) return;
+
+            // Movimento do bot (simples, segue a bola)
+            if (botY + RAQUETE_ALTURA/2 < bolaY) {
+                botY += VELOCIDADE_RAQUETE;
+            } else {
+                botY -= VELOCIDADE_RAQUETE;
+            }
+            // Limita o bot
+            if (botY < 0) botY = 0;
+            if (botY > ALTURA - RAQUETE_ALTURA) botY = ALTURA - RAQUETE_ALTURA;
+
+            // Move a bola
+            bolaX += bolaVX;
+            bolaY += bolaVY;
+
+            // Colisão com paredes superior/inferior
+            if (bolaY <= 0 || bolaY >= ALTURA - BOLA_TAM) {
+                bolaVY *= -1;
+            }
+
+            // Colisão com raquete do jogador (esquerda)
+            if (bolaX <= RAQUETE_LARGURA && 
+                bolaY + BOLA_TAM > jogadorY && 
+                bolaY < jogadorY + RAQUETE_ALTURA) {
+                bolaVX = Math.abs(bolaVX); // vai para direita
+                // Efeito da onde bateu
+                let diferenca = (bolaY + BOLA_TAM/2) - (jogadorY + RAQUETE_ALTURA/2);
+                bolaVY = diferenca * 0.2;
+            }
+
+            // Colisão com raquete do bot (direita)
+            if (bolaX + BOLA_TAM >= LARGURA - RAQUETE_LARGURA && 
+                bolaY + BOLA_TAM > botY && 
+                bolaY < botY + RAQUETE_ALTURA) {
+                bolaVX = -Math.abs(bolaVX); // vai para esquerda
+                let diferenca = (bolaY + BOLA_TAM/2) - (botY + RAQUETE_ALTURA/2);
+                bolaVY = diferenca * 0.2;
+            }
+
+            // Pontuação
+            if (bolaX < 0) {
+                pontosBot++;
+                if (pontosBot >= PONTOS_MAX) {
+                    gameOver = true;
+                    vencedor = 'bot';
+                } else {
+                    // Reinicia bola
+                    bolaX = LARGURA/2;
+                    bolaY = ALTURA/2;
+                    bolaVX = VELOCIDADE_BOLA;
+                    bolaVY = VELOCIDADE_BOLA * (Math.random() > 0.5 ? 1 : -1);
+                }
+            }
+            if (bolaX + BOLA_TAM > LARGURA) {
+                pontosJogador++;
+                if (pontosJogador >= PONTOS_MAX) {
+                    gameOver = true;
+                    vencedor = 'jogador';
+                } else {
+                    bolaX = LARGURA/2;
+                    bolaY = ALTURA/2;
+                    bolaVX = -VELOCIDADE_BOLA;
+                    bolaVY = VELOCIDADE_BOLA * (Math.random() > 0.5 ? 1 : -1);
+                }
+            }
+
+            desenhar();
+        }
+
+        function desenhar() {
+            ctx.clearRect(0, 0, LARGURA, ALTURA);
+            ctx.fillStyle = '#fff';
+
+            // Raquete do jogador
+            ctx.fillRect(0, jogadorY, RAQUETE_LARGURA, RAQUETE_ALTURA);
+            // Raquete do bot
+            ctx.fillRect(LARGURA - RAQUETE_LARGURA, botY, RAQUETE_LARGURA, RAQUETE_ALTURA);
+            // Bola
+            ctx.fillRect(bolaX, bolaY, BOLA_TAM, BOLA_TAM);
+            // Linha central
+            ctx.strokeStyle = '#fff';
+            ctx.setLineDash([5, 15]);
+            ctx.beginPath();
+            ctx.moveTo(LARGURA/2, 0);
+            ctx.lineTo(LARGURA/2, ALTURA);
+            ctx.stroke();
+            ctx.setLineDash([]);
+
+            placarSpan.innerText = `${pontosJogador} - ${pontosBot}`;
+        }
+
+        function finalizarJogo() {
+            if (pongInterval) clearInterval(pongInterval);
+            pongInterval = null;
+            alert(`Fim de jogo! ${vencedor === 'jogador' ? 'Você venceu!' : 'O bot venceu!'}`);
+
+            if (modoAtual === 'desafio') {
+                if (typeof saldoAtual !== 'undefined' && typeof jogador !== 'undefined') {
+                    if (vencedor === 'jogador') {
+                        saldoAtual += 3.0;
+                        jogador.vitorias++;
+                        alert('🏆 Desafio vencido! R$3,00 creditados.');
+                    } else {
+                        alert('😞 Você perdeu o desafio.');
+                    }
+                    jogador.desafios++;
+                    if (typeof atualizarSaldoUI === 'function') atualizarSaldoUI();
+                    if (typeof atualizarPerfilUI === 'function') atualizarPerfilUI();
+                }
+            }
+        }
+
+        function moverJogador(direcao) {
+            if (gameOver) return;
+            if (direcao === 'cima') {
+                jogadorY -= VELOCIDADE_RAQUETE;
+            } else if (direcao === 'baixo') {
+                jogadorY += VELOCIDADE_RAQUETE;
+            }
+            if (jogadorY < 0) jogadorY = 0;
+            if (jogadorY > ALTURA - RAQUETE_ALTURA) jogadorY = ALTURA - RAQUETE_ALTURA;
+        }
+
+        function iniciarPong(modo) {
+            modoAtual = modo;
+            reiniciarJogo();
+            modalPong.style.display = 'flex';
+            if (pongInterval) clearInterval(pongInterval);
+            pongInterval = setInterval(atualizar, 1000/60); // 60 FPS
+        }
+
+        // Eventos de teclado
+        window.addEventListener('keydown', (e) => {
+            if (modalPong.style.display !== 'flex') return;
+            if (e.key === 'ArrowUp') {
+                e.preventDefault();
+                moverJogador('cima');
+            } else if (e.key === 'ArrowDown') {
+                e.preventDefault();
+                moverJogador('baixo');
+            }
+        });
+
+        // Eventos de botões touch
+        btnCima.addEventListener('click', () => moverJogador('cima'));
+        btnBaixo.addEventListener('click', () => moverJogador('baixo'));
+
+        btnFechar.addEventListener('click', () => {
+            modalPong.style.display = 'none';
+            if (pongInterval) clearInterval(pongInterval);
+            pongInterval = null;
+        });
+
+        window.abrirPong = iniciarPong;
+    })();
+</script>
+  <!-- ========== FIM DO BLOCO PONG ========== -->
+  <!-- ========================================== -->
+  <!--            JOGO CORRIDA DE REAÇÃO          -->
+  <!-- ========================================== -->
+  <!-- Modal da Corrida de Reação -->
+  <div id="modalReacao" class="modal-jogo" style="display: none;">
+   <div class="modal-conteudo" style="max-width: 550px; background: linear-gradient(145deg, #1f3a4b, #0f2838); border: 3px solid #ffae42;">
+    <h2 style="color:#fbffb9; text-shadow: 2px 2px 0 #aa7700;">⚡ CORRIDA DE REAÇÃO</h2>
+    <div class="canvas-container">
+     <canvas id="reacaoCanvas" width="400" height="400" style="width:100%; max-width:400px; height:auto; aspect-ratio:1/1; background:#0d1f2c; border-radius:20px; border:2px solid #ffae42;"></canvas>
+    </div>
+    <div style="display: flex; justify-content: space-around; margin: 10px 0;">
+     <span style="font-size:1.2rem;">Tempo: <strong id="reacaoTempo" style="color:gold; font-size:1.5rem;">0 ms</strong></span> <span style="font-size:1.2rem;">Recorde: <strong id="reacaoRecorde" style="color:gold; font-size:1.5rem;">0 ms</strong></span>
+    </div>
+    <!-- Controles touch para celular (botões maiores) -->
+    <div class="controles-touch" style="margin-top:15px;">
+     <div class="linha-botoes" style="gap:20px; justify-content:center;">
+      <button class="btn-seta" id="reacaoBotao" style="width:90px; height:90px; font-size:2rem; border-radius:50%; background:#ffaa00;">👆</button>
+     </div>
+    </div>
+    <p class="instrucoes" style="margin:10px 0;">Espere o círculo ficar verde e clique/toque o mais rápido possível!
+     <br>
+     Quanto menor o tempo, melhor.</p>
+    <button class="fechar-modal" id="fecharReacao" style="background:#b33; color:white; border:none; padding:15px 30px; border-radius:60px; font-weight:bold; font-size:1.2rem; cursor:pointer; margin-top:5px;">Fechar jogo</button>
+   </div>
+  </div>
+  <script>
+    (function() {
+        const modalReacao = document.getElementById('modalReacao');
+        if (!modalReacao) return;
+
+        const canvas = document.getElementById('reacaoCanvas');
+        const tempoSpan = document.getElementById('reacaoTempo');
+        const recordeSpan = document.getElementById('reacaoRecorde');
+        const btnReacao = document.getElementById('reacaoBotao');
+        const btnFechar = document.getElementById('fecharReacao');
+
+        const ctx = canvas.getContext('2d');
+        let intervalo = null;
+        let modoAtual = 'individual';
+
+        // Variáveis do jogo
+        let estado = 'aguardando'; // 'aguardando', 'pronto', 'respondeu'
+        let tempoInicio = 0;
+        let tempoReacao = 0;
+        let recorde = Infinity;
+        let timeoutEspera = null;
+
+        function desenhar() {
+            ctx.clearRect(0, 0, 400, 400);
+            // Fundo
+            ctx.fillStyle = '#0d1f2c';
+            ctx.fillRect(0, 0, 400, 400);
+
+            // Desenha círculo
+            if (estado === 'aguardando') {
+                ctx.fillStyle = '#aa0000';
+                ctx.beginPath();
+                ctx.arc(200, 200, 150, 0, 2 * Math.PI);
+                ctx.fill();
+                ctx.fillStyle = 'white';
+                ctx.font = 'bold 24px Arial';
+                ctx.textAlign = 'center';
+                ctx.fillText('AGUARDE', 200, 200);
+            } else if (estado === 'pronto') {
+                ctx.fillStyle = '#00aa00';
+                ctx.beginPath();
+                ctx.arc(200, 200, 150, 0, 2 * Math.PI);
+                ctx.fill();
+                ctx.fillStyle = 'white';
+                ctx.font = 'bold 24px Arial';
+                ctx.textAlign = 'center';
+                ctx.fillText('CLIQUE!', 200, 200);
+            } else if (estado === 'respondeu') {
+                ctx.fillStyle = '#aaaaaa';
+                ctx.beginPath();
+                ctx.arc(200, 200, 150, 0, 2 * Math.PI);
+                ctx.fill();
+                ctx.fillStyle = 'white';
+                ctx.font = 'bold 24px Arial';
+                ctx.textAlign = 'center';
+                ctx.fillText(tempoReacao + ' ms', 200, 200);
+            }
+        }
+
+        function iniciarRodada() {
+            if (estado === 'pronto' || estado === 'respondeu') return;
+            estado = 'aguardando';
+            desenhar();
+            // Sorteia tempo de espera entre 1 e 4 segundos
+            const espera = Math.random() * 3000 + 1000; // 1000 a 4000 ms
+            if (timeoutEspera) clearTimeout(timeoutEspera);
+            timeoutEspera = setTimeout(() => {
+                if (estado === 'aguardando') {
+                    estado = 'pronto';
+                    tempoInicio = Date.now();
+                    desenhar();
+                }
+            }, espera);
+        }
+
+        function processarClique() {
+            if (estado === 'pronto') {
+                // Resposta correta
+                tempoReacao = Date.now() - tempoInicio;
+                if (tempoReacao < recorde) {
+                    recorde = tempoReacao;
+                    recordeSpan.innerText = recorde + ' ms';
+                }
+                tempoSpan.innerText = tempoReacao + ' ms';
+                estado = 'respondeu';
+                desenhar();
+                // Prepara próxima rodada após 1 segundo
+                setTimeout(() => {
+                    iniciarRodada();
+                }, 1000);
+            } else if (estado === 'aguardando') {
+                // Clicou cedo demais
+                tempoReacao = 0;
+                tempoSpan.innerText = '0 ms';
+                estado = 'respondeu';
+                desenhar();
+                // Mostra mensagem de erro
+                ctx.fillStyle = 'white';
+                ctx.font = 'bold 20px Arial';
+                ctx.fillText('Muito cedo!', 200, 300);
+                setTimeout(() => {
+                    iniciarRodada();
+                }, 1000);
+            }
+            // Se já respondeu, ignora
+        }
+
+        function iniciarReacao(modo) {
+            modoAtual = modo;
+            estado = 'aguardando';
+            tempoReacao = 0;
+            recorde = Infinity;
+            recordeSpan.innerText = '0 ms';
+            tempoSpan.innerText = '0 ms';
+            desenhar();
+            modalReacao.style.display = 'flex';
+            iniciarRodada();
+        }
+
+        function finalizarJogo() {
+            if (intervalo) clearInterval(intervalo);
+            if (timeoutEspera) clearTimeout(timeoutEspera);
+            intervalo = null;
+            // Não há game over, só sai do modal
+        }
+
+        // Eventos
+        btnReacao.addEventListener('click', processarClique);
+        canvas.addEventListener('click', processarClique);
+        canvas.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            processarClique();
+        });
+
+        btnFechar.addEventListener('click', () => {
+            modalReacao.style.display = 'none';
+            if (timeoutEspera) clearTimeout(timeoutEspera);
+            if (modoAtual === 'desafio') {
+                if (typeof saldoAtual !== 'undefined' && typeof jogador !== 'undefined') {
+                    // Simula bot: tempo aleatório entre 200 e 800 ms
+                    const tempoBot = Math.floor(Math.random() * 600) + 200;
+                    if (recorde !== Infinity && recorde < tempoBot) {
+                        saldoAtual += 3.0;
+                        jogador.vitorias++;
+                        alert(`🏆 Desafio vencido! Seu melhor: ${recorde}ms, bot: ${tempoBot}ms. Ganhou R$3,00!`);
+                    } else if (recorde === Infinity) {
+                        alert('😞 Você não completou nenhuma tentativa.');
+                    } else if (recorde === tempoBot) {
+                        saldoAtual += 1.5;
+                        alert(`🤝 Empate! Devolvidos R$1,50.`);
+                    } else {
+                        alert(`😞 Você perdeu! Seu melhor: ${recorde}ms, bot: ${tempoBot}ms.`);
+                    }
+                    if (recorde !== Infinity) jogador.desafios++;
+                    if (typeof atualizarSaldoUI === 'function') atualizarSaldoUI();
+                    if (typeof atualizarPerfilUI === 'function') atualizarPerfilUI();
+                }
+            }
+        });
+
+        window.abrirReacao = iniciarReacao;
+    })();
+</script>
+  <!-- ========== FIM DO BLOCO CORRIDA DE REAÇÃO ========== -->
+  <!-- ========================================== -->
+  <!--              JOGO DA MEMÓRIA                -->
+  <!-- ========================================== -->
+  <!-- Modal da Memória -->
+  <div id="modalMemoria" class="modal-jogo" style="display: none;">
+   <div class="modal-conteudo" style="max-width: 550px; background: linear-gradient(145deg, #1f3a4b, #0f2838); border: 3px solid #ffae42;">
+    <h2 style="color:#fbffb9; text-shadow: 2px 2px 0 #aa7700;">🎴 JOGO DA MEMÓRIA</h2>
+    <div class="canvas-container">
+     <canvas id="memoriaCanvas" width="400" height="400" style="width:100%; max-width:400px; height:auto; aspect-ratio:1/1; background:#0d1f2c; border-radius:20px; border:2px solid #ffae42;"></canvas>
+    </div>
+    <div style="display: flex; justify-content: space-around; margin: 10px 0;">
+     <span style="font-size:1.2rem;">Tentativas: <strong id="memoriaTentativas" style="color:gold; font-size:1.5rem;">0</strong></span> <span style="font-size:1.2rem;">Pares: <strong id="memoriaPares" style="color:gold; font-size:1.5rem;">0/8</strong></span>
+    </div>
+    <!-- Botão de reiniciar (grande) -->
+    <div style="display: flex; gap: 20px; justify-content: center; margin-top:10px;">
+     <button id="memoriaReiniciar" style="background: #d48b1c; border: none; color: white; width:90px; height:90px; border-radius: 50%; font-weight: bold; font-size: 1.5rem; border-bottom: 5px solid #8f5711; cursor: pointer;">🔄</button>
+    </div>
+    <p class="instrucoes" style="margin:10px 0;">Clique nas cartas para virar. Encontre todos os pares.
+     <br>
+     Quanto menos tentativas, melhor!</p>
+    <button class="fechar-modal" id="fecharMemoria" style="background:#b33; color:white; border:none; padding:15px 30px; border-radius:60px; font-weight:bold; font-size:1.2rem; cursor:pointer; margin-top:5px;">Fechar jogo</button>
+   </div>
+  </div>
+  <script>
+    (function() {
+        const modalMemoria = document.getElementById('modalMemoria');
+        if (!modalMemoria) return;
+
+        const canvas = document.getElementById('memoriaCanvas');
+        const tentativasSpan = document.getElementById('memoriaTentativas');
+        const paresSpan = document.getElementById('memoriaPares');
+        const btnReiniciar = document.getElementById('memoriaReiniciar');
+        const btnFechar = document.getElementById('fecharMemoria');
+
+        const ctx = canvas.getContext('2d');
+        let modoAtual = 'individual';
+
+        // Emojis para os pares (8 pares)
+        const EMOJIS = ['🐶', '🐱', '🐭', '🐹', '🐰', '🦊', '🐻', '🐼'];
+        let cartas = [];
+        let viradas = []; // índices das cartas viradas (máx 2)
+        let bloqueado = false;
+        let paresEncontrados = 0;
+        let tentativas = 0;
+
+        const TAM = 100; // 4x4, cada célula 100x100
+
+        function embaralhar(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+
+        function iniciarCartas() {
+            // Cria pares
+            let novasCartas = [];
+            for (let i = 0; i < EMOJIS.length; i++) {
+                novasCartas.push({ emoji: EMOJIS[i], virada: false, par: i });
+                novasCartas.push({ emoji: EMOJIS[i], virada: false, par: i });
+            }
+            cartas = embaralhar(novasCartas);
+            viradas = [];
+            paresEncontrados = 0;
+            tentativas = 0;
+            bloqueado = false;
+            atualizarPlacar();
+            desenhar();
+        }
+
+        function desenhar() {
+            ctx.clearRect(0, 0, 400, 400);
+            for (let i = 0; i < 4; i++) {
+                for (let j = 0; j < 4; j++) {
+                    const idx = i * 4 + j;
+                    const x = j * TAM;
+                    const y = i * TAM;
+                    const carta = cartas[idx];
+
+                    // Fundo da carta
+                    ctx.fillStyle = carta.virada ? '#ffd966' : '#1e4f6b';
+                    ctx.fillRect(x, y, TAM-2, TAM-2);
+                    ctx.strokeStyle = '#ffae42';
+                    ctx.lineWidth = 2;
+                    ctx.strokeRect(x, y, TAM-2, TAM-2);
+
+                    if (carta.virada) {
+                        // Desenha emoji
+                        ctx.font = '50px Arial';
+                        ctx.textAlign = 'center';
+                        ctx.textBaseline = 'middle';
+                        ctx.fillStyle = '#333';
+                        ctx.fillText(carta.emoji, x + TAM/2, y + TAM/2);
+                    }
+                }
+            }
+        }
+
+        function atualizarPlacar() {
+            tentativasSpan.innerText = tentativas;
+            paresSpan.innerText = `${paresEncontrados}/8`;
+        }
+
+        function virarCarta(idx) {
+            if (bloqueado) return;
+            if (cartas[idx].virada) return; // já virada
+            if (viradas.length === 2) return; // já tem duas viradas
+
+            cartas[idx].virada = true;
+            viradas.push(idx);
+            desenhar();
+
+            if (viradas.length === 2) {
+                // Verifica se é par
+                const carta1 = cartas[viradas[0]];
+                const carta2 = cartas[viradas[1]];
+                tentativas++;
+                atualizarPlacar();
+
+                if (carta1.par === carta2.par) {
+                    // Par encontrado
+                    paresEncontrados++;
+                    viradas = [];
+                    if (paresEncontrados === 8) {
+                        // Fim de jogo
+                        setTimeout(() => {
+                            alert(`Parabéns! Você completou em ${tentativas} tentativas.`);
+                            if (modoAtual === 'desafio') {
+                                if (typeof saldoAtual !== 'undefined' && typeof jogador !== 'undefined') {
+                                    const tentativasBot = Math.floor(Math.random() * 20) + 10; // bot faz entre 10 e 30
+                                    if (tentativas < tentativasBot) {
+                                        saldoAtual += 3.0;
+                                        jogador.vitorias++;
+                                        alert(`🏆 Desafio vencido! Você fez ${tentativas} tentativas, bot fez ${tentativasBot}. Ganhou R$3,00!`);
+                                    } else if (tentativas === tentativasBot) {
+                                        saldoAtual += 1.5;
+                                        alert(`🤝 Empate! Devolvidos R$1,50.`);
+                                    } else {
+                                        alert(`😞 Você perdeu! Bot fez ${tentativasBot} tentativas.`);
+                                    }
+                                    jogador.desafios++;
+                                    if (typeof atualizarSaldoUI === 'function') atualizarSaldoUI();
+                                    if (typeof atualizarPerfilUI === 'function') atualizarPerfilUI();
+                                }
+                            }
+                        }, 200);
+                    }
+                } else {
+                    // Não é par, desvira após 1 segundo
+                    bloqueado = true;
+                    setTimeout(() => {
+                        cartas[viradas[0]].virada = false;
+                        cartas[viradas[1]].virada = false;
+                        viradas = [];
+                        bloqueado = false;
+                        desenhar();
+                    }, 1000);
+                }
+            }
+        }
+
+        function handleClick(e) {
+            const rect = canvas.getBoundingClientRect();
+            const scaleX = canvas.width / rect.width;
+            const scaleY = canvas.height / rect.height;
+
+            let clientX, clientY;
+            if (e.touches) {
+                clientX = e.touches[0].clientX;
+                clientY = e.touches[0].clientY;
+                e.preventDefault();
+            } else {
+                clientX = e.clientX;
+                clientY = e.clientY;
+            }
+
+            const canvasX = (clientX - rect.left) * scaleX;
+            const canvasY = (clientY - rect.top) * scaleY;
+
+            const col = Math.floor(canvasX / TAM);
+            const linha = Math.floor(canvasY / TAM);
+            const idx = linha * 4 + col;
+
+            if (idx >= 0 && idx < 16) {
+                virarCarta(idx);
+            }
+        }
+
+        function reiniciar() {
+            iniciarCartas();
+        }
+
+        function iniciarMemoria(modo) {
+            modoAtual = modo;
+            iniciarCartas();
+            modalMemoria.style.display = 'flex';
+        }
+
+        canvas.addEventListener('click', handleClick);
+        canvas.addEventListener('touchstart', handleClick);
+
+        btnReiniciar.addEventListener('click', reiniciar);
+
+        btnFechar.addEventListener('click', () => {
+            modalMemoria.style.display = 'none';
+        });
+
+        window.abrirMemoria = iniciarMemoria;
+    })();
+</script>
+  <!-- ========== FIM DO BLOCO JOGO DA MEMÓRIA ========== -->
+  <script>
+// ===== UNIFICAÇÃO DOS JOGOS =====
+// Substitui a função abrirJogo original para chamar os jogos corretamente
+window.abrirJogo = function(nome, modo) {
+    if (nome === 'Cobrinha' && typeof window.abrirSnake === 'function') {
+        window.abrirSnake(modo);
+    } else if (nome === 'Sudoku' && typeof window.abrirSudoku === 'function') {
+        window.abrirSudoku(modo);
+    } else if (nome === 'Tetris' && typeof window.abrirTetris === 'function') {
+        window.abrirTetris(modo);
+    } else if (nome === '100 Slots' && typeof window.abrirSlots === 'function') {
+        window.abrirSlots(modo);
+    } else if (nome === 'Candy Crush Lite' && typeof window.abrirCandy === 'function') {
+        window.abrirCandy(modo);
+    } else if (nome === 'Flappy Bird' && typeof window.abrirFlappy === 'function') {
+        window.abrirFlappy(modo);
+    } else if (nome === '2048' && typeof window.abrir2048 === 'function') {
+        window.abrir2048(modo);
+    } else if (nome === 'Pong' && typeof window.abrirPong === 'function') {
+        window.abrirPong(modo);
+    } else if (nome === 'Corrida de Reação' && typeof window.abrirReacao === 'function') {
+        window.abrirReacao(modo);
+    } else if (nome === 'Memória' && typeof window.abrirMemoria === 'function') {
+        window.abrirMemoria(modo);
+    } else {
+        alert(`Jogo "${nome}" ainda não foi implementado.`);
+    }
+};
+
+
+</script>
+<!-- ========================================== -->
+<!-- BOTS COM NOMES REAIS BRASILEIROS E APELIDOS GAMER -->
+<!-- ========================================== -->
+<script>
+(function() {
+    // ===== NOMES PRÓPRIOS BRASILEIROS (REAIS) =====
+    const nomesBrasileiros = [
+        "Ana", "Beatriz", "Carlos", "Daniel", "Eduarda", "Felipe", "Gabriela", "Henrique", "Isabela", "João",
+        "Karina", "Lucas", "Mariana", "Nicolas", "Olivia", "Pedro", "Rafaela", "Samuel", "Tatiane", "Ubirajara",
+        "Valéria", "William", "Xavier", "Yara", "Zilda", "Alice", "Bernardo", "Cecília", "Davi", "Elisa",
+        "Fernanda", "Guilherme", "Heloísa", "Igor", "Júlia", "Kaique", "Larissa", "Miguel", "Natália", "Otávio",
+        "Patrícia", "Rafael", "Sofia", "Thiago", "Taylor", // Taylor incluso
+        "Vanessa", "Wagner", "Yasmin", "Arthur", "Bruna", "Cauã", "Esther", "Heitor", "Isis", "Joaquim"
+    ];
+
+    // ===== SOBRENOMES BRASILEIROS COMUNS =====
+    const sobrenomesBrasileiros = [
+        "Silva", "Santos", "Oliveira", "Souza", "Rodrigues", "Ferreira", "Alves", "Pereira", "Lima", "Gomes",
+        "Costa", "Ribeiro", "Martins", "Carvalho", "Almeida", "Lopes", "Soares", "Fernandes", "Vieira", "Barbosa",
+        "Rocha", "Dias", "Nascimento", "Andrade", "Machado", "Mendes", "Araújo", "Cardoso", "Teixeira", "Cavalcanti",
+        "Monteiro", "Melo", "Cunha", "Gonçalves", "Assis", "Pinto", "Borges", "Nunes", "Ramos", "Campos",
+        "Freitas", "Peixoto", "Barros", "Duarte", "Fogaça", "Macedo", "Padilha", "Quaresma", "Rios", "Salgado"
+    ];
+
+    // ===== ELEMENTOS PARA APELIDOS GAMER =====
+    const prefixesGamer = [
+        "Shadow", "Phoenix", "Raven", "Blaze", "Ghost", "Night", "Dark", "Light", "Storm", "Thunder",
+        "Crimson", "Viper", "Wolf", "Falcon", "Tiger", "Dragon", "Phantom", "Spectre", "Vortex", "Nova",
+        "Zero", "Omega", "Alpha", "Beta", "Gamma", "Delta", "Sigma", "Knight", "Warrior", "Hunter",
+        "Sniper", "Reaper", "Wraith", "Cyclone", "Inferno", "Frost", "Venom", "Toxin", "Mystic", "Arcane",
+        "Neon", "Cyber", "Pixel", "Byte", "Glitch", "Error", "Logic", "Vector", "Rogue", "Void"
+    ];
+
+    const suffixesGamer = [
+        "X", "Z", "Xx", "Zz", "X_X", "Z_Z", "007", "42", "99", "1337",
+        "King", "Queen", "Lord", "Lady", "Master", "Pro", "Noob", "God", "Legend", "Hero",
+        "Slayer", "Killer", "Hawk", "Eagle", "Lion", "Bear", "Fox", "Wolf", "Panther", "Jaguar",
+        "Blade", "Sword", "Axe", "Bow", "Arrow", "Spear", "Shield", "Armor", "Helm", "Boots"
+    ];
+
+    // ===== GERADOR DE APELIDO GAMER =====
+    function gerarApelidoGamer() {
+        const prefix = prefixesGamer[Math.floor(Math.random() * prefixesGamer.length)];
+        const suffix = suffixesGamer[Math.floor(Math.random() * suffixesGamer.length)];
+        // Às vezes coloca um número entre o prefixo e o sufixo
+        if (Math.random() > 0.5) {
+            return prefix + Math.floor(Math.random() * 100) + suffix;
+        } else {
+            return prefix + suffix;
+        }
+    }
+
+    // ===== CRIA 100 BOTS =====
+    window.bots = [];
+    for (let i = 0; i < 100; i++) {
+        const nome = nomesBrasileiros[Math.floor(Math.random() * nomesBrasileiros.length)];
+        const sobrenome = sobrenomesBrasileiros[Math.floor(Math.random() * sobrenomesBrasileiros.length)];
+        const nomeCompleto = nome + " " + sobrenome;
+        const nomeJogador = gerarApelidoGamer(); // apelido com estilo gamer
+        const saldo = Math.floor(Math.random() * 5000) + 100; // R$ 100 a R$ 5100
+        const vitorias = Math.floor(Math.random() * 200);
+        const desafios = Math.floor(Math.random() * 300) + 50;
+        const nivel = Math.random() < 0.33 ? 'iniciante' : (Math.random() < 0.5 ? 'médio' : 'avançado');
+        bots.push({
+            id: i + 1,
+            nomeCompleto: nomeCompleto,
+            nomeJogador: nomeJogador,
+            saldo: saldo,
+            vitorias: vitorias,
+            desafios: desafios,
+            nivel: nivel,
+            avatar: '🎮' // emoji de controle para manter o tema gamer
+        });
+    }
+
+    // Ordena por saldo (ranking)
+    bots.sort((a, b) => b.saldo - a.saldo);
+
+    // Atualiza a lista de ranking (primeiros 10)
+    const rankingList = document.getElementById('listaRanking');
+    if (rankingList) {
+        rankingList.innerHTML = '';
+        bots.slice(0, 10).forEach(bot => {
+            const li = document.createElement('li');
+            // Exibe o nome de jogador (gamer) e o saldo em R$
+            li.textContent = `${bot.nomeJogador} – R$ ${bot.saldo.toLocaleString('pt-BR')}`;
+            rankingList.appendChild(li);
+        });
+    }
+
+    // Função para selecionar um bot aleatório baseado no nível do jogador
+    window.selecionarBot = function(nivelJogador = 'médio') {
+        let botsFiltrados = bots.filter(b => b.nivel === nivelJogador);
+        if (botsFiltrados.length === 0) botsFiltrados = bots;
+        return botsFiltrados[Math.floor(Math.random() * botsFiltrados.length)];
+    };
+
+    // Função para simular pontuação de um bot em um jogo específico
+    window.pontuacaoBot = function(jogo, nivelBot) {
+        let base = 0;
+        switch(nivelBot) {
+            case 'iniciante': base = Math.random() * 50; break;
+            case 'médio': base = Math.random() * 100 + 50; break;
+            case 'avançado': base = Math.random() * 200 + 150; break;
+            default: base = Math.random() * 100;
+        }
+        // Ajusta conforme o jogo
+        if (jogo === 'Sudoku') return Math.floor(base / 10);
+        if (jogo === 'Tetris') return Math.floor(base * 2);
+        if (jogo === 'Cobrinha') return Math.floor(base);
+        if (jogo === '100 Slots') return Math.floor(base * 5);
+        if (jogo === 'Candy Crush Lite') return Math.floor(base * 3);
+        if (jogo === 'Flappy Bird') return Math.floor(base);
+        if (jogo === '2048') return Math.floor(base * 4);
+        if (jogo === 'Pong') return Math.floor(base / 10);
+        if (jogo === 'Corrida de Reação') return Math.floor(base);
+        if (jogo === 'Memória') return Math.floor(base / 2);
+        return Math.floor(base);
+    };
+
+    console.log('100 bots carregados — nomes reais + apelidos gamers');
+})();
+</script>
+<!-- ========== FIM DO BLOCO DOS BOTS ========== -->
+ </body>
+</html>
